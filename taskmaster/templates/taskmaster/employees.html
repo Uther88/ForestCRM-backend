@@ -1,0 +1,130 @@
+{% extends 'taskmaster/base.html' %}
+
+{% block title %}
+	Сотрудники
+{% endblock %}
+
+{% block content %}
+	<div class="card">
+		<div class="card-header">
+			{% if user.is_staff %}
+			<div class="opt-panel">
+				<button class="btn btn-sm btn-outline-success fa fa-user-plus" role="button" data-toggle="tooltip" data-placement="bottom" title="Добавить сотрудника" id="add-user"></button>
+				<button class="btn btn-sm btn-outline-danger fa fa-user-times" role="button" data-toggle="tooltip" data-placement="bottom" title="Удалить сотрудника(ов)" type="submit" form="rem-user-form"></button>
+			</div>
+			{% endif %}
+			<b>Сотрудники</b>
+		</div>
+		<table class="table table-hover table-sm">
+			<thead>
+				<tr> 
+					{% if user.is_staff %}
+						<th><span class="fa fa-check"></span></th>
+					{% endif %}
+					<th>№</th>
+					<th>Опции</th>
+					<th>Аватар</th>
+					<th>Фамилия</th>
+					<th>Имя</th>
+					<th>Отчество</th>
+					<th>Должность</th>
+					<th>Электронная почта</th>
+					<th class="p-1">Задачи<br>
+						<span class="fa fa-check text-success" data-toggle="tooltip" title="Выполненные задачи"></span> / 
+						<span class="fa fa-hourglass text-warning" data-toggle="tooltip" title="В процессе"></span> /
+						<span class="fa fa-remove text-danger" data-toggle="tooltip" title="Не выполненные задачи"></span>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for employ in employees %}
+				<tr>
+					{% if user.is_staff %}
+						<form action=" {% url 'delete_employees' %}" method="POST" id="rem-user-form">{% csrf_token %}</form>
+						<td><input form="rem-user-form" type="checkbox" name="pk" value="{{ employ.pk }}"></td>
+					{% endif %}
+					<td>{{ forloop.counter }}</td>
+					{% if user.is_staff %}
+					<td><button class="employ-edit fa fa-edit btn btn-sm btn-outline-primary border-0" data-pk="{{ employ.pk }}" role='button'></button></td>
+					{% else %}
+						<td>
+							<button class="employ-view fa fa-eye btn btn-sm btn-outline-primary border-0" role='button' data-toggle="modal" data-target="#view_user_modal_{{employ.pk}}"></button></td>
+							<div class="modal fade" id="view_user_modal_{{employ.pk}}" role="dialog">
+							  <div class="modal-dialog" role="document">
+								<div class="modal-content">
+								  <div class="modal-header bg-primary text-white">
+									<h5 class="modal-title" id="view-user-title">Просмотр сотрудника</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									  <span aria-hidden="true">&times;</span>
+									</button>
+								  </div>
+								  <div class="modal-body d-flex justify-content-around">
+										{% if employ.avatar %}
+											<img src="{{ employ.avatar.url }}" class="rounded user-pic my-auto">
+										{% else %}
+											<img src="media/users/avatars/user.png" class="rounded user-pic my-auto">
+										{% endif %}
+									  <div class="d-flex flex-column justify-content-center p-2" style='width:50%;'>
+										  <p class="d-flex justify-content-between m-1"><span class="mr-2">Логин:</span><span>{{ employ.username }}</span></p>
+										  <p class="d-flex justify-content-between m-1"><span class="mr-2">Имя:</span><span>{{ employ.first_name }}</span></p>
+										  <p class="d-flex justify-content-between m-1"><span class="mr-2">Фамилия:</span><span>{{ employ.last_name }}</span></p>
+										  <p class="d-flex justify-content-between m-1"><span class="mr-2">Отчество:</span><span>{{ employ.third_name }}</span></p>
+										  <p class="d-flex justify-content-between m-1"><span class="mr-2">Должность:</span><span>{{ employ.position }}</span></p>
+										  <p class="d-flex justify-content-between m-1"><span class="mr-2">Email:</span><span class="small">{{ employ.email }}</span></p>
+									  </div>
+								  </div>
+								  <div class="modal-footer">
+									<button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+									</div>
+								  </div>
+								</div>
+							  </div>
+					{% endif %}
+					<td class="p-0 m-0">
+						{% if employ.avatar %}
+							<img src={{ employ.avatar.url }} width="50" height="50" class="img-thumbnail"></td>
+						{% else %}
+							<img src='/media/users/avatars/user.png' width="50" height="50" class="img-thumbnail"></td>
+						{% endif %}
+					<td>{{ employ.last_name}}</td>
+					<td>{{ employ.first_name}}</td>
+					<td>{{ employ.third_name}}</td>
+					<td>{{ employ.position }}</td>
+					<td>{{ employ.email }}</td>
+					<td><a href="/tasks/all/?status=completed&performer={{ employ.pk }}">{{ employ.get_com_tasks }}</a> / 
+					<a href="/tasks/all/?status=uncompleted&performer={{ employ.pk }}">{{ employ.get_unc_tasks }}</a> /
+					<a href="/tasks/all/?status=overdue&performer={{ employ.pk }}">{{ employ.get_overdue_tasks }}</a>
+					
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+				<div class="modal fade" id="user_modal" role="dialog">
+				  <div class="modal-dialog" role="document">
+					<div class="modal-content">
+					  <div class="modal-header bg-success text-white">
+						<h5 class="modal-title" id="user-title">Добавить/редактировать сотрудника</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					  </div>
+					  <div class="modal-body">
+						<form method="POST" enctype="multipart/form-data" id="user-form">
+							{% csrf_token %}
+							<div class="form-group">
+								{{ form.as_p }}
+								<input type="hidden" name="act" value="new">
+							</div>
+						</form>
+					  </div>
+					  <div class="modal-footer">
+						<button type="submit" form="user-form" class="btn btn-success">Сохранить</button>
+						<button type="button" class="btn btn-danger" id="md-dismiss" data-dismiss="modal">Закрыть</button>
+						</div>
+					  </div>
+					</div>
+				  </div>
+	</div>
+
+{% endblock %}

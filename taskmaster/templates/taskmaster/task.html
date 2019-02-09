@@ -1,0 +1,125 @@
+{% extends 'taskmaster/base.html' %}
+
+{% block title %}
+	Просмотр задания
+{% endblock %}
+
+{% block content %}
+	<div class="d-flex justify-content-center p-3">
+		{% if task.assigner == user or user.is_staff %}
+		<div class="p-1 d-flex align-self-start flex-last flex-column align-items-stretch rounded-right table-bordered">
+			<button class="m-1 btn btn-outline-primary fa fa-edit" role='button' data-toggle="modal" data-target="#taskModal"></button>
+			<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Редактирование задачи</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">&times;</span>
+					</button>
+				 </div>
+			    <div class="modal-body">
+					<form id="task-form" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					{{ form.as_p }}
+					<div id="files" class="card">
+						{% for file in task.files.all %}
+							<span class="d-flex justify-content-between align-items-center p-2 table-hover">{{ file }}<button type='button' onclick='removeFile({{file.pk}});' class="btn btn-secondary fa fa-remove text-danger" id="remove-file-btn"></button></span>
+						{% endfor %}
+					</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" form="task-form" class="btn btn-success">Сохранить</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Отмена</button>
+				</div>
+			  </div>
+		    </div>
+	      </div>
+	      <button class='m-1 btn btn-outline-danger fa fa-remove' role='button' data-container='body' data-placement='top' data-trigger="focus" data-html='true' data-toggle='popover' title="Удалить?" data-content='<a href="{% url 'delete_task' pk=task.pk %}" class="p-2 fa fa-check text-danger"></a><a class="p-2 fa fa-remove text-success" role="button"></a>'></button> 
+			{% if task.performer == user and not task.is_completed %}
+			<button class="m-1 btn btn-outline-success fa fa-check" role='button' id="task_completed" onclick="taskComplete({{task.pk}});" data-toggle='tooltip' title="Отметить как выполненное"></button>
+			{% endif %}
+			</div>
+			{% elif task.performer == user and not task.is_completed %}
+			<div class="p-1 d-flex align-self-start flex-last flex-column align-items-stretch rounded-right table-bordered">
+				<button class="m-1 btn btn-outline-success fa fa-check self-align-end" role='button' id="task_completed" onclick="taskComplete({{task.pk}});" data-toggle='tooltip' title="Отметить как выполненное"></button>
+			</div>
+		{% endif %}
+
+<div class="card d-flex p-1">
+	<table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+				<th class="p-2 text-center table-info" colspan='2'>{{ task.title }}</th>
+
+			</tr>
+		</thead>
+		<tbody class='p-0'>
+			<colgroup span='2' width='300'>
+			<tr>
+				<th>Важность</th>
+				<td>
+					<span class="badge badge-{{ task.importance }}" >{{ task.get_importance_display }}</span>
+				</td>
+			</tr>
+			<tr>
+				<th>Выполнить до</th>
+				<td>{{ task.to_complete }}</td>
+			</tr>
+			<tr>
+				<th>Назначающий</th>
+				<td>{{ task.assigner.get_full_name }}</td>
+			</tr>
+			<tr>
+				<th>Выполняющий</th>
+				<td>{{ task.performer.get_full_name }}</td>
+			</tr>
+			<tr>
+				<th>Дата создания</th>
+				<td>{{ task.created_date }}</td>
+			</tr>
+			<tr>
+				<th>Статус</th>
+				<td>
+				{% if task.get_status == 'completed' %}
+					<span class='fa fa-check text-success'></span>
+				{% elif task.get_status == 'in_process' %}
+					<span class='fa fa-hourglass text-warning'></span>
+				{% elif task.get_status == 'overdue' %}
+					<span class='fa fa-remove text-danger'></span>
+				{% endif %}
+				</td>
+			</tr>		
+			<tr>
+				<th>Дата выполнения</th>
+				<td>{% if task.is_completed %} 
+						{{ task.completed_date }}
+					{% else %}
+							---
+					{% endif %}
+				</td>
+			</tr>
+			<tr>
+				<th>Прикрепленные файлы</th>
+				<td>
+					{% for file in task.files.all %}
+						<a href="{{ file.file.url }}" class="fa fa-file" data-toggle='tooltip' title="{{ file.title }}" ></a>
+					{% empty %}
+						Нет
+					{% endfor %}
+				</td>
+			</tr>
+			<tr class='table-info'>
+				<th colspan='2'>Описание задачи</th>
+			</tr>	
+			<tr class="text-left">
+				<td colspan='2' class="p-2 table-bordered bg-default">{{ task.text }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	</div>
+	</div>
+
+{% endblock %}

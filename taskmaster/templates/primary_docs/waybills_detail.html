@@ -1,0 +1,249 @@
+<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-content">
+	  <div class="modal-header bg-primary text-white">
+		<h5 class="modal-title mx-auto" id="waybill-title">Путевой лист {{ waybill.get_type_of_display }} № {{ waybill.number }}</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		  <span aria-hidden="true">&times;</span>
+		</button>
+	  </div>
+	  <div class="modal-body px-3 py-0">
+		<div class="card table-bordered text-left" id="waybill_detail_view">
+			<h5 class="card-header">Основные данные</h5>
+			<div class="row">
+				<div class="col-md-6">
+					Организация:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.organization }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Участок:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.station }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Оператор:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.author.get_full_name }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Дата:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.date}}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Номер:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.number }}
+				</div>
+			</div>	
+			<div class="row">
+				<div class="col-md-6">
+					Автомобиль:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.car }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Статус:
+				</div>
+					<div class="col-md-6">
+					{% if waybill.is_completed %}
+						<i class="fa fa-check text-success"></i>
+						{% else %}
+						<i class="fa fa-spin fa-hourglass-end text-warning"></i>
+					{% endif %}
+					</div>
+			</div>
+			<h5 class="card-header">Персонал</h5>
+			<div class="row">
+				<div class="col-md-6">
+					Водитель:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.driver }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Диспетчер:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.dispatcher|default_if_none:'---' }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Выезд разрешен:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.check_out_allow }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Автомобиль принял:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.car_took }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Сдал водитель:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.auto_passed }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Принял механик:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.auto_accept }}
+				</div>
+			</div>
+			<h5 class="card-header">Движение горючего</h5>
+			<div class="row">
+				<div class="col-md-6">
+					Горючее:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.fuel }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Остаток при выезде:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.fuel_balance_on_dep }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Остаток при возвращении:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.fuel_balance_on_ret }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Выданно л:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.fuel_issued }}
+				</div>
+			</div>
+			<h5 class="card-header">Работа водителя и автомобиля</h5>
+			<div class="row">
+				<div class="col-md-6">
+					Выезд из гаража:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.dep_date }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					Возвращение в гараж:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.ret_date }}
+				</div>
+			</div>
+			<h6 class="card-header p-1">Показания спидометра</h6>
+			<div class="row">
+				<div class="col-md-6">
+					При выезде:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.dep_km }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					При возвращении:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.ret_km }}
+				</div>
+			</div>
+			<h5 class="card-header">Задания водителю</h5>
+			<table class="table table-sm text-center">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Из</th>
+						<th>В</th>
+						<th>Выезд</th>
+						<th>Возвр.</th>
+						<th>Км</th>
+						<th>Расход</th>
+						<th>Вид работ</th>
+						<th>Условия</th>
+					</tr>
+				</thead>
+				<tbody style="font-size:8pt;">
+			{% for task in waybill.tasks.all %}
+				<tr>
+					<td> {{ forloop.counter }}</td>
+					<td>{{ task.from_dest}}</td>
+					<td>{{ task.to_dest }}</td>
+					<td>{{ task.departure|date:'d.m.y H:i' }}</td>
+					<td>{{ task.arrival|date:'d.m.y H:i' }}</td>
+					<td>{{ task.distance }}</td>
+					<td>{{ task.total_fuel }}</td>
+					<td>{{ task.kind }}</td>
+					<td>{{ task.get_conditions_display }}</td>
+				</tr>		
+			{% endfor %}
+			</tbody>
+				<tfoot class="table-active">
+					<tr>
+						<th colspan='3'>Итого:</th>
+						<td colspan='2'>{{ waybill.total_hours }} часов</td>
+						<td>{{ waybill.total_km }}</td>
+						<td>{{ waybill.total_fuel }}</td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tfoot>
+			</table>
+			<div class="row">
+				<div class="col-md-6">
+					Особые отметки:
+				</div>
+				<div class="col-md-6">
+					{{ waybill.comment }}
+				</div>
+			</div>
+	</div>	
+	 </div>
+	
+		<div class="modal-footer">
+			 {% if waybill.is_completed %}
+				<button type="button" role="button" class="btn btn-primary fa fa-print mr-auto"> <a href="{% url 'print_waybill' pk=waybill.pk %}" target='_blank' style="text-decoration:none;" class="text-white">Печать</a></button>
+			{% else %}
+				<button role="button" class="btn btn-primary mr-auto"><a href="{% url 'edit_waybill' pk=waybill.pk %}#msform" style="text-decoration:none;" class="text-white">Редактировать</a></button>
+			{% endif %}
+			<button type="button" class="btn btn-danger" role="button" data-dismiss="modal">Закрыть</button>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,140 @@
+{% extends 'taskmaster/base.html' %}
+{% load static from staticfiles %}
+{% block content %}
+<div class="card mx-auto my-4 w-50" id="outfit" style="box-shadow: 0 0 10px;">
+	<div class="card-header bg-inverse text-white">
+		<h5 class="card-title m-0">Наряд-акт на выполнение работ</h5>
+	</div>
+	<div class="card-block p-0">
+		<ul class="nav nav-tabs text-center" role="tablist">
+		  <li class="nav-item nav-link text-muted active ml-auto col-4" href="#main" role="tab">
+			<b>Основные данные</b>
+		  </li>
+		  <li class="nav-item nav-link col-4 text-muted"  href="#personal" role="tab">
+			<b>Персонал</b>
+		  </li>
+		  <li class="nav-item nav-link text-muted mr-auto col-4"  href="#works" role="tab">
+			<b>Работы</b>
+		  </li>
+		</ul>
+
+		<!-- Tab panes -->
+		<form id="outfit-form" class="tab-content">
+							
+							<!-- MAIN -->
+			  <div class="tab-pane fade p-3" id="main" role="tabpanel">
+				 <div class="form-group row">
+					<label class="col-6 col-form-label">{{ outfit_form.organization.label }}</label>
+					<div class="col-6">{{ outfit_form.organization }}</div>
+				 </div>
+				 <div class="form-group row">
+					<label class="col-6 col-form-label">{{ outfit_form.station.label }}</label>
+					<div class="col-6">{{ outfit_form.station }}</div>
+				 </div>
+				 <div class="form-group row">
+					<label class="col-6 col-form-label">{{ outfit_form.place.label }}</label>
+					<div class="col-6">{{ outfit_form.place }}</div>
+				 </div>
+				 <div class="form-group row">
+					<label class="col-6 col-form-label">{{ outfit_form.number.label }}</label>
+					<div class="col-6">{{ outfit_form.number }}</div>
+				 </div>
+				 <div class="form-group row">
+					<label class="col-6 col-form-label">{{ outfit_form.date_begin.label }}</label>
+					<div class="col-6">{{ outfit_form.date_begin }}</div>
+				 </div>
+				 <div class="form-group row my-0">
+					<label class="col-6 col-form-label">{{ outfit_form.date_end.label }}</label>
+					<div class="col-6">{{ outfit_form.date_end }}</div>
+				 </div>
+			  </div>
+			  
+						<!-- PERSONAL -->
+			  <div class="tab-pane fade p-3" id="personal" role="tabpanel">
+				 <div class="form-group row">
+					<label class="col-6 col-form-label">{{ outfit_form.master.label }}</label>
+					<div class="col-6">{{ outfit_form.master }}</div>
+				 </div>
+				 <div class="form-group row">
+					<label class="col-6 col-form-label">{{ outfit_form.brigadier.label }}</label>
+					<div class="col-6">{{ outfit_form.brigadier }}</div>
+				 </div>
+				 <div class="col pb-2 text-left px-0">
+					<button class="btn btn-sm btn-outline-success fa fa-plus" type="button" role="button" data-toggle="modal" data-target="#addCalcModal" id="addCalcBtn"></button>
+				 </div>
+				 <table class="table table-sm table-bordered m-0" style="background: #FFF; font-size: 10pt; outline: 1px solid gray;">
+					 <thead>
+						<tr>
+							<td><i class="fa fa-remove"></i></td>
+							<td>ФИО</td>
+							<td >Отработано: день/часы</td>
+							<td>Итого дней</td>
+							<td>Иого часов</td>
+						</tr>
+					 </thead>
+					 <tbody id="calcTable">
+					 </tbody>
+					 <tfoot id="total-info" style="font-weight: bold;">
+						 <tr>
+							<td colspan="3" class="text-right">Итого:</td>							
+							<td class="total-days">0</td>
+							<td class="total-hours">0</td>
+						 </tr>
+					 </tfoot>
+				 </table>
+			  </div>
+			  
+						<!-- WORKS -->
+			  <div class="tab-pane fade p-3 show active" id="works" role="tabpanel">gsoms</div>
+	  </form>
+	</div>
+	<div class="card-footer">
+		<button class="next btn btn-danger fa fa-arrow-right" form="outfit-form" type="button" role="button" disabled></button>
+	</div>
+</div>
+				<!--  MODALS  -->
+<div class="modal fade bd-example-modal-sm" id="addCalcModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content card">
+		<div class="card-header bg-inverse text-white">
+			Калькуляция
+		</div>
+			<div class="card-block p-1" style="font-size: 9pt;">
+				<form>
+			  <div class="form-group row pt-2">
+				<label class="col-6 col-form-label">{{ calcwork_form.worker.label }}</label>
+				<div class="col-6">
+					{{ calcwork_form.worker }}
+				</div>
+				<input type="hidden" id="calcDays">
+			  </div>
+			  <table class="table table-sm mx-auto" style="font-size: 9pt; border: 1px solid #BFBFBF;">
+				<thead>
+					<tr>
+						<th>Дни</th>
+						<th><i class="fa fa-check"></th>
+						<th width="30%">Часы</th>
+					</tr>
+				</thead>
+				<tbody id="dnh">
+				</tbody>
+			  </table>
+			  </form> 
+			<div class="modal-footer">
+				<button class="btn btn-danger fa fa-remove" role="button" data-dismiss="modal"></button>
+				<button class="btn btn-danger fa fa-save" id="saveCalc" role="button"></button>
+			</div>
+		</div>
+    </div>
+  </div>
+</div>		
+			
+	<style>
+		#outfit ul .active { color: #1E90FF !important;}
+		#outfit .active {background-color: rgba(0, 0, 0, 0.075); border:0;}
+		#dnh input { margin-bottom: 5px; display: inline-block;}
+		#dnh label { text-align: center;}
+	</style>
+
+	<script src='{% static "js/outfit_form.js" %}'></script>	
+{% endblock %}

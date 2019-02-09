@@ -1,0 +1,79 @@
+{% extends 'taskmaster/base.html' %}
+
+{% block title %}
+	Сообщения
+{% endblock %}
+
+{% block content %}
+	<div class="card">
+		<form method="POST">
+			{% csrf_token %}
+		<h5 class="card-header">
+			<button class="btn-outline-danger rounded border-0 fa fa-remove float-left" type="submit" name="action" value="delete" role='button' data-toggle="tooltip" data-placement="right" title="Удалить отмеченные"></button>
+			{{ title }}</h5>
+			<table class="table table-bordered border-2 table-hover" id="messages-table">
+				
+				
+				<thead>
+					<tr>
+						<th width='5%'><span class="fa fa-check"></span></th>
+						<th width='5%'>№</th>
+						<th width='10%'>От</th>
+						<th>Кому</th>
+						<th>Тема</th>
+						<th>Текст</th>
+						<th>Файлы</th>
+						<th width='10%'>Дата</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					{% for message in messages %}
+							<tr role='button' id="{{ message.pk }}" data-stat="{{ message.is_new }}">
+								<th><input type="checkbox" value="{{ message.pk }}" name="messages"></th>
+								<td>{{ forloop.counter }}</td>
+								<td>{{ message.sender }}</td>
+								<td>
+									{% for recipient in message.recipient.all %}
+										{{ recipient }}
+									{% endfor %}
+								</td>
+								<td>{{ message.title|truncatewords:2 }}</td>
+								<td>{{ message.text|truncatewords:4 }}</td>
+								<td>{{ message.files.count }}</td>
+								<td>{{ message.created_date }}</td>
+						</tr>
+						{% empty %}
+							<tr>
+								<td colspan="100%">Сообщений нет</td>
+							</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</form>
+	</div>
+	<div class="m-auto modal modal-sm fade" id="message_modal" role="dialog">
+				  <div class="modal-dialog" role="document">
+					<div class="modal-content">
+					  <div class="modal-header bg-success text-white">
+						<h5 class="modal-title" id="message-title"></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					  </div>
+					  <div class="modal-body">
+						 <label>Текст сообщения</label>
+						<p id="message-text" class="text-left form-control"></p>
+						<hr>
+						<label>Прикрепленные файлы</label>
+						<ol id="message-files" class="text-left"></ol>
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+						</div>
+					  </div>
+					</div>
+				  </div>
+	
+
+{% endblock %}

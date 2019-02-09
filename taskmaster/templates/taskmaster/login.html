@@ -1,0 +1,37 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Авторизация</title>
+		<script src='{% static "js/jquery-3.2.0.min.js" %}'></script>
+		<script src='{% static "js/tether.js" %}'></script>
+		<script src='{% static "js/bootstrap.js" %}'></script>
+		<link rel="stylesheet" href='{% static "css/tether.css" %}'>
+		<link rel="stylesheet" href='{% static "css/bootstrap.css" %}'>
+		<link rel="stylesheet" href='{% static "css/style.css" %}'>
+   	<meta name="viewport" content="initial-scale=1, maximum-scale=5, user-scalable=no, width=device-width">
+	</head>
+	<body>
+		<div class="container d-flex justify-content-center align-items-center" style="height: 100%;">
+			<div class="card text-center" style="box-shadow: 0 0 10px lightgray;">
+				<div class="card-header bg-primary">
+					<h4 class="text-white">Авторизация</h4>
+				</div>
+				<div class="card-block">
+					<form method="POST">
+						{% csrf_token %}
+						<div class="form-group">
+							{{form}}							
+						</div>
+						<input type="submit" class="btn btn-outline-success my-2 my-sm-0 cursor-pointer" value="Авторизироватся">
+					</form>
+				</div>
+				<div class="card-footer bg-primary">
+					<small class="text-white">
+						TaskMaster
+					</small>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

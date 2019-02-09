@@ -1,0 +1,46 @@
+{% extends 'taskmaster/base.html' %}
+{% block title %}
+	{{ user.last_name }} {{user.first_name|first}}. {{ user.third_name|first}}.
+{% endblock %}
+
+{% block content %}
+<div class="card">
+	<div class="card-header table-responsive">
+		<h5>Задачи на сегодня</h5>
+	</div>
+	
+	<table class="table table-hover table-bordered">
+		<thead>
+			<th>№</th>
+			<th>Опции</th>
+			<th>Кому назначенно</th>
+			<th>Кем назначенно</th>
+			<th>Важность</th>
+			<th>Выполнить до</th>
+			<th>Название</th>
+			<th>Статус</th>
+		</thead>
+		<tbody>
+		{% for task in tasks %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td><a href="{% url 'task_view' pk=task.pk %}" class="fa fa-eye btn btn-sm btn-outline-primary border-0" role='button' data-toggle="tooltip" title="Просмотреть"></a></td>
+			<td>{{ task.performer }}</td>
+			<td>{{ task.assigner }}</td>
+			<td><span class="badge badge-{{task.importance}}">{{ task.get_importance_display }}</span></td>
+			<td>{{ task.to_complete }}</td>
+			<td>{{ task.title }}</td>
+			<td>{% if task.get_status == 'completed' %}
+				<span class='fa fa-check text-success'></span>
+				{% elif task.get_status == 'in_process' %}
+					<span class='fa fa-hourglass text-warning'></span>
+				{% elif task.get_status == 'overdue' %}
+					<span class='fa fa-remove text-danger'></span>
+				{% endif %}
+			</td>
+		{% endfor %}
+		</tr>
+		</tbody>
+	</table>
+</div>
+{% endblock %}

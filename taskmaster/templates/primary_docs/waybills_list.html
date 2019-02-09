@@ -1,0 +1,74 @@
+{% extends 'taskmaster/base.html' %}
+
+{% block title %}
+	Путевые листы
+{% endblock title %}
+
+{% block content %}
+	<div id="waybill-options" class="p-2">
+		<a href=" {% url 'new_waybill' %}" target="blank" style="position: absolute; left: 10px;" class="px-3 btn btn-sm btn-outline-success" data-toggle='tooltip'data-placement="right" title='Создать новый'><i class="fa fa-plus p-0"></i></a>
+		<span class="mr-5">Путевые листы</span>
+	</div>
+    <div class="table-responsive">
+	<table class="table" id="wayBillsListTable">
+		<thead class="table-active">
+            <tr>
+				<th>#</th>
+				<th>№</th>
+				<th>Участок</th>
+				<th>Тип</th>
+				<th>Дата</th>
+				<th>Автомобиль</th>
+				<th>Водитель</th>
+				<th>Задачи</th>
+				<th>Всего км</th>
+				<th>Часы</th>
+				<th>Топливо, л.</th>
+				<th>Статус</th>
+				<th>Опции</th>
+			</tr>
+		</thead>
+		<tbody id="waybills_list">
+			{% for wb in waybills|dictsortreversed:"date" %}
+				<tr data-pk="{{ wb.pk }}">
+					<td>{{ forloop.counter }}</td>
+					<td>{{ wb.number }}</td>
+					<td>{{ wb.station }}</td>
+					<td>{{ wb.get_type_of_display.0|upper }}</td>
+					<td>{{ wb.date }}</td>
+					<td>{{ wb.car }}</td>
+					<td>{{ wb.driver }}</td>
+					<td>{{ wb.tasks.count }}</td>
+					<td>{{ wb.total_km }}</td>
+					<td>{{ wb.total_hours }}</td>
+					<td>{{ wb.total_fuel }}</td>
+					<td>
+					{% if wb.is_completed %}
+						<i class="fa fa-check text-success" title="Завершен"></i>
+					{% else %}
+						<i class="fa fa-spin fa-hourglass-end text-warning"></i>
+					{% endif %}
+					</td>
+					<td>
+						<div class="dropdown">
+							<i class="btn text-primary dropdown-toggle fa fa-lg fa-list" id="dropdownMenuButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ></i>
+							<ul class="dropdown-menu dropdown-menu-right" aria-lebelleby="dropdownMenuButton">
+								<li role="button" class="btn btn-sm text-primary dropdown-item px-0" onclick='viewWaybill("{{wb.pk}}")'><i class="dropdown-item fa fa-fw fa-eye text-primary"></i> Просмотр</li>
+								{% if not wb.is_completed %}
+									<li role="button" class="btn btn-sm text-primary dropdown-item px-0"><a href="{% url 'edit_waybill' pk=wb.pk %}#msform" style="text-decoration:none;"><i class="dropdown-item fa fa-fw fa-edit text-primary"></i> Редактировать</a></li>
+								{% else %}
+									<li role="button" class="btn btn-sm text-primary dropdown-item px-0"><a href="{% url 'print_waybill' pk=wb.pk %}" target='_blank' style="text-decoration:none;" onClick="printWayBill()"><i class="dropdown-item fa fa-fw fa-print text-primary"></i> Печать</a></li>
+								{% endif %}
+							</ul>
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	</div>
+<div class="modal fade bd-example-modal-lg" id="waybillView" role="dialog">
+
+  </div>
+
+{% endblock content %}

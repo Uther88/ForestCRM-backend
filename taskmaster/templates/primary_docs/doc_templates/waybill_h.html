@@ -1,0 +1,843 @@
+{% load static from staticfiles %}
+{% load math %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta content="text/html;charset=UTF-8" http-equiv="Content-Type">
+		<script src='{% static "js/jquery-3.2.0.min.js" %}'></script>
+		<script src='{% static "js/tether.js" %}'></script>
+		<script src='{% static "js/bootstrap.js" %}'></script>
+		<link rel="stylesheet" href='{% static "css/tether.css" %}'>
+		<link rel="stylesheet" href='{% static "css/bootstrap.css" %}'>
+		<link rel="stylesheet" href='{% static "css/style.css" %}'>
+        
+        <style media="print" type="text/css">
+           @page {
+                size: A4 landscape;
+                margin: 0;
+                
+            }
+           
+        </style>
+		<style type="text/css">
+            .b-border {
+                border: 2px solid black;
+            }
+            .l-border {
+                outline: 1px solid black;
+            }
+			.u-cell { 
+                border-bottom: 1px solid black; 
+                
+                display: inline-block;
+                position: relative;
+            }
+            .field {
+                border-bottom: 1px solid black; 
+                position: relative;
+                display: inline-block;
+            }
+            
+            .addr:after {
+                content: '(наименование, адрес и номер телефона)';
+                position: absolute;
+                font-size: 6pt;
+                left: 30%;
+                top: 17px;
+                width: 100%;
+            }
+            .fio:after {
+                content: '(фамилия, имя, отчество)';
+                position: absolute;
+                font-size: 6pt;
+                left: 0;
+                top: 15px;
+                width: 100%;
+            }
+            .strk:after {
+                content: '(ненужное зачеркнуть)';
+                position: absolute;
+                font-size: 6pt;
+                left: 0;
+                top: 15px;
+                width: 100%;
+            }
+            .mrk:after {
+                content: '(марка)';
+                position: absolute;
+                font-size: 6pt;
+                left: 17%;
+                top: 18px;
+            }
+            .ser:after {
+                content: '(серия)';
+                position: absolute;
+                top: 25px;
+                left: 24px;
+                font-size: 6pt;
+            }
+            .sign:after {
+                content: '(подпись)';
+                position: absolute;
+                width: 100%;
+                top: 90%;
+                left:12%;
+                font-size: 6pt;
+            }
+            .sign-en {
+                position: absolute;
+                font-size: 6pt;
+            }
+            .sign-en-2:after {
+                content: '(расшифровка подписи)';
+                position: absolute;
+                top: 90%;
+                left: 15%;
+                font-size: 6pt;
+            }
+            .pos:after {
+                content: '(должность)';
+                position: absolute;
+                width: 100%;
+                top: 90%;
+                left:5%;
+                font-size: 6pt;
+            }
+            .bbd {border-bottom: 3px double black !important;}
+            .bld {border-left: 3px double black !important;}
+            .brd {border-right: 3px double black !important;}
+            .btd {border-top: 3px double black !important;}
+            
+            .fuel-table td, .work-table td{
+                border: 1px solid;
+                
+            }
+            
+            * { padding: 0 !important; margin: 0 !important;}
+            body { font-family: "Times New Roman"; font-size: 7pt; padding: 1cm 1cm !important;}
+		</style>
+
+	</head>
+  <body>
+      
+                <!-- Page 1 -->
+      
+	<div class="page text-center" id="page-1">
+		<div class="row">
+			<div class="col-1">
+				Место для штампа<br> организации
+			</div>
+            <div class="col" style="font-size: 12pt;">
+                <strong>
+                    ПУТЕВОЙ ЛИСТ<br>
+                    грузового автомобиля
+                </strong>
+                <span class="u-cell ser" style="width: 55pt;">{{wb.station.series}}</span>                 <!-- serial -->
+                <b>№</b>
+                <span class="u-cell" style="width: 55pt;">{{wb.number}}</span>                       <!-- number -->
+            </div>
+            <div class="col-3 text-left">
+                <span class="float-right mr-5" style="font-size: 8pt;">
+                    Типовая межотрослевая форма № 4-С<br>
+                    Утверждена постановлением Госкомстата России<br>
+                    от 28.11.97 № 78
+                </span>
+            </div>
+		</div>    
+        <div class="row pt-3" style="height: 70px;">       
+                <div class="col-10 text-center">
+                   « <span class="u-cell" style="width: 20pt; font-size: 10pt;">{{wb.date.day}}</span> »
+                        <span class="u-cell" style="width: 65pt; font-size: 10pt;">{{wb.date|date:'E'}}</span>          <!-- date -->
+                       <span class="u-cell ml-2" style="width: 35pt; font-size: 10pt;">{{wb.date.year}}</span> г.
+                    
+                </div>
+            
+            <div class="col-9 text-left">
+                <div class="row">
+                    <div class="col-1"><big>Организация</big></div>
+                    <div class="col-11 u-cell addr" style="font-size: 9pt;">                    <!-- organization -->
+                        {{wb.organization}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-3" style="top:-29px">
+                <table class="ml-auto" style="font-size: 9pt;">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td class="l-border">Коды</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-2" style="font-size: 9pt;">Форма по ОКУД</td>
+                            <td class="b-border px-4">0345004</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right px-2">по ОКПО</td>
+                            <td class="b-border border-top-0"></td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="table">
+                    <div class="row">
+                        <div class="col-1 l-border ml-auto">
+                            Код
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right  pr-2">Режим работы</div>
+                        <div class="col-1 l-border"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right pr-2">Колонна</div>
+                        <div class="col-1 l-border"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right pr-2">Бригада</div>
+                        <div class="col-1 l-border"></div>
+                    </div>
+                    <div class="row">
+                        <span>Марка автомобиля</span>
+                        <div class="col u-cell mx-1">
+                           {{wb.car.name}}                  <!-- car -->
+                        </div>
+                        <div class="col-1 l-border"></div>
+                    </div>
+                    <div class="row">
+                        <span>Государственный номерной знак</span>
+                        <div class="col u-cell mx-1">
+                            {{wb.car.number}}                                          <!-- car -->
+                        </div>
+                        <div class="col-2 text-right pr-1">
+                            Гаражный номер
+                        </div>
+                        <div class="col-1 l-border"></div>
+                    </div>
+                    <div class="row">
+                        <span class="pr-2">Водитель</span>
+                        <div class="col u-cell fio">
+                           {{wb.driver}}                                                <!-- driver -->
+                        </div>
+                        <div class="col-2 text-right mr-1">
+                            Табельный номер
+                        </div>
+                        <div class="col-1 l-border"></div>
+                    </div>
+                    <div class="row pt-3">
+                        <span>Удостоверение №</span>
+                        <div class="col-2 u-cell mx-2"></div>
+                        <span>Класс</span>
+                        <div class="col-1 u-cell mx-2"></div>
+                    </div>
+                    <div class="row pt-1">
+                        <span>Лицензионная карточка</span>
+                        <div class="col-4 u-cell strk">
+                            стандартная, <strike>ограниченная</strike>
+                        </div>
+                    </div>
+                    <div class="row pt-3">
+                        <span>Регистрационный №</span>
+                        <div class="col-3 u-cell mx-2"></div>
+                        <span>Серия</span>
+                        <div class="col-2 u-cell mx-2"></div>
+                        <span>№</span>
+                        <div class="col-1 u-cell mx-2"></div>
+                    </div>
+                    <div class="row mt-2">
+                        <span class="pr-2">
+                            Прицеп 1
+                        </span>
+                       <div  class="col-1 u-cell mrk">                          
+                        </div>
+                        <span class="px-2">
+                            Государственный номерной знак
+                        </span>
+                        <div  class="col u-cell ">                          
+                        </div>
+                        <span class="px-2">
+                            Гаражный номер
+                        </span>
+                        <div  class="col-1 b-border py-2" style="border-bottom: 1px solid black;" >                          
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span class="pr-2">
+                            Прицеп 2
+                        </span>
+                       <div  class="col-1 u-cell mrk">                          
+                        </div>
+                        <span class="px-2">
+                            Государственный номерной знак
+                        </span>
+                        <div  class="col u-cell">                          
+                        </div>
+                        <span class="px-2">
+                            Гаражный номер
+                        </span>
+                        <div  class="col-1 b-border py-2" style="border-bottom: 1px solid black; border-top:0;">                          
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span class="pr-2">
+                            Прицеп 3
+                        </span>
+                       <div  class="col-1 u-cell mrk">                          
+                        </div>
+                        <span class="px-2">
+                            Государственный номерной знак
+                        </span>
+                        <div  class="col u-cell">                          
+                        </div>
+                        <span class="px-2">
+                            Гаражный номер
+                        </span>
+                        <div  class="col-1 b-border py-2" style="border-bottom: 1px solid black; border-top:0;">                      
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span class="pr-2">
+                            Прицеп 4
+                        </span>
+                       <div  class="col-1 u-cell mrk">                          
+                        </div>
+                        <span class="px-2">
+                            Государственный номерной знак
+                        </span>
+                        <div  class="col u-cell">                          
+                        </div>
+                        <span class="px-2">
+                            Гаражный номер
+                        </span>
+                        <div  class="col-1 b-border py-2" style="border-top:0;">                      
+                        </div>
+                    </div>
+                    <div class="row pt-3">
+                        <span class="pr-1">Сопровождающие лица:</span>
+                        <div class="col u-cell text-left">
+                            &nbsp;
+                        </div>
+                        <div class="col-12 u-cell">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-6 pl-5">
+                <div class="row">
+                   <table class="table work-table" style="border: 3px double; border-bottom: 0; border-right: 0; border-collapse: collapse;">
+                        <thead style="border-right: 3px double">
+                            <tr>
+                                <td colspan="8" style="font-size: 9pt;">Работа для водителя автомобиля</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" class="brd">операция</td>
+                                <td colspan="4">время по графику</td>
+                                <td rowspan="2" width="7%" class="brd bld">нулевой<br> пробег, <br> км</td>
+                                <td rowspan="2">показания<br>спидометра,<br>км</td>
+                                <td rowspan="2" class="bld">время фактическое,<br>число, месяц, ч. мин.</td>
+                            </tr>
+                            <tr>
+                                <td>число</td>
+                                <td>месяц</td>
+                                <td class="px-2">ч.</td>
+                                <td>мин.</td>
+                            </tr>
+                            <tr>
+                                <td class="brd">1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td class="bld">6</td>
+                                <td class="brd bld">7</td>
+                                <td>8</td>
+                            </tr>
+                       </thead>
+                         <tbody style="border-right: 3px solid">                                                    <!-- car&driver work -->
+                           <tr style="border-top: 3px solid;">
+                                <td style="border-right: 3px solid; border-top: 3px double;">выезд из гаража</td>
+                                <td>{{wb.dep_date.day}}</td>
+                                <td>{{wb.dep_date.month}}</td>
+                                <td>{{wb.dep_date|date:'H'}}</td>
+                                <td>{{wb.dep_date|date:'i'}}</td>
+                                <td class="bld"></td>
+                                <td class="brd bld">{{wb.dep_km}}</td>
+                                <td style="border-right: 3px solid;">{{wb.dep_date|date:'d.m H:i'}}</td>
+                            </tr>
+                            <tr style="border-bottom: 3px solid;">
+                                <td style="border-right: 3px solid;  border-bottom: 3px double;">возвращение в гараж</td>
+                                <td>{{wb.ret_date.day}}</td>
+                                <td>{{wb.ret_date.month}}</td>
+                                <td>{{wb.ret_date|date:'H'}}</td>
+                                <td>{{wb.ret_date|date:'i'}}</td>
+                                <td class="bld"></td>
+                                <td class="brd bld">{{wb.ret_km}}</td>
+                               <td style="border-right: 3px solid;">{{wb.ret_date|date:'d.m H:i'}}</td>
+                            </tr>
+                       </tbody>
+                    </table>
+
+                </div>
+                
+                <div class="row mt-3">
+                    <table class="table fuel-table" style="border: 3px double; border-bottom: 0; border-right: 0; border-collapse: collapse;">
+                        <thead style="border-right: 3px double">
+                            <tr>
+                                <td colspan="7" style="font-size: 9pt;">Движение горючего</td>                             <!-- fuel act -->
+                                <td rowspan="2" colspan="2" class="bld">Время работы, ч. мин.</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="py-1">горючее</td>
+                                <td rowspan="2" class="brd bld">выдано,<br> л</td>
+                                <td colspan="2">остаток при</td>
+                                <td rowspan="2" class="brd bld">сдано,<br> л.</td>
+                                <td rowspan="2" class="brd">коэффициент<br> изменения<br> нормы</td>
+                               
+                            </tr>
+                            <tr>
+                                <td>марка</td>
+                                <td>код<br> марки</td>
+                               
+                                <td>выезде, л.</td>
+                                <td>возвраще-<br>нии, л</td>
+                                <td>спецоборудо-<br>вания</td>
+                                <td>двигателя</td>
+                                
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>10</td>
+                                <td class="brd bld">11</td>
+                                <td>12</td>
+                                <td>13</td>
+                                <td class="brd bld">14</td>
+                                <td class="brd bld">15</td>
+                                <td>16</td>
+                                <td>17</td>
+                            </tr>
+                        </thead>
+                        <tbody style="border-right: 3px solid">
+                            <tr style="border-top: 3px solid;">
+                                <td class="pt-1" style="border-right: 3px solid; border-top: 3px double;">{{wb.car.fuel.mark}}</td>
+                                <td>{{wb.car.fuel.code|default_if_none:''}}</td>
+                                <td class="brd bld">{{wb.fuel_issued}}</td>
+                                <td>{{wb.fuel_balance_on_dep}}</td>
+                                <td>{{wb.fuel_balance_on_ret}}</td>
+                                <td class="brd bld"></td>
+                                <td class="brd"></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr style="border-bottom: 3px solid;">
+                                <td class="pt-1" style="border-right: 3px solid; border-bottom: 3px double;">&nbsp;</td>
+                                <td></td>
+                                <td class="brd bld"></td>
+                                <td ></td>
+                                <td></td>
+                                <td class="brd bld"></td>
+                                <td class="brd"></td>
+                                <td border-right: 3px solid;></td>
+                                <td style="border-right: 2px solid;"></td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table work-table">
+                        <tr><td colspan="5">&nbsp;</td></tr>
+                        <tr>
+                            <td>заправщика</td>
+                            <td>механика</td>
+                            <td>механика</td>
+                            <td>заправщика</td>
+                            <td>диспетчера</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td><td></td><td></td><td></td><td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row pt-2">
+            <div class="col">
+                <table class="table work-table">
+                    <thead style="border: 3px double;">
+                        <tr><td colspan="8">ЗАДАНИЕ ВОДИЛЕЛЮ</td></tr>
+                        <tr>
+                            <td rowspan="2" width="15%">в чье распоряжение (наиме-<br>нование и адрес заказчика)</td>
+                            <td class="brd bld" rowspan="2" width="15%">время прибытия, ч. мин.</td>
+                            <td colspan="2" style="font-size: 9pt;">адрес пункта</td>
+                            <td class="brd bld" rowspan="2">Вид работ</td>
+                            <td rowspan="2" width="5%">количество<br>ездок</td>
+                            <td class="brd bld" rowspan="2" width="5%">расстояние,<br>км</td>
+                            <td rowspan="2" width="5%">перевезти<br> тон</td>
+                        </tr>
+                        <tr>
+                            <td>погрузки</td>
+                            <td >разгрузки</td>
+                        </tr>
+                        <tr>
+                            <td>18</td><td class="brd bld">19</td><td>20</td><td class="brd ">21</td><td>22</td><td class="brd bld">23</td><td>24</td><td class="bld">25</td>
+                        </tr>
+                    </thead>
+                    <tbody class="text-left bld brd">
+                        <tr>
+                            <td>{{wb.organization}}</td>
+                            <td class="brd bld"></td>
+                            <td>{{wb.tasks.all.0.from_dest}}</td>
+                            <td class="brd bld">{{wb.tasks.all.0.to_dest}}</td>
+                            <td>{{wb.tasks.all.0.kind}}</td>
+                            <td class="brd bld"></td><td></td><td class="bld"></td>
+                        </tr>
+                        <tr><td>&nbsp;</td><td class="brd bld">&nbsp;</td><td>&nbsp;</td><td class="brd bld">&nbsp;</td><td>&nbsp;</td><td class="bld">&nbsp;</td><td class="brd bld">&nbsp;</td><td>&nbsp;</td></tr>
+                         <tr><td>&nbsp;</td><td class="brd bld">&nbsp;</td><td>&nbsp;</td><td class="brd bld">&nbsp;</td><td class="brd bld">&nbsp;</td><td>&nbsp;</td><td class="brd bld">&nbsp;</td><td>&nbsp;</td></tr>
+                         <tr><td>&nbsp;</td><td class="brd bld">&nbsp;</td><td>&nbsp;</td><td class="brd bld">&nbsp;</td><td class="brd bld">&nbsp;</td><td>&nbsp;</td><td class="brd bld">&nbsp;</td><td >&nbsp;</td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" style="border: 0;" class="text-left">Водительское удостоверение проверил, выдал,</td>
+                            <td colspan="3" class="text-right pr-2" style="border: 0;">Итого</td>
+                            <td style="border: 3px solid;"></td>
+                           <td style="border: 3px solid;" class="brd bld"></td>
+                           <td style="border: 3px solid;"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="row text-left" style="white-space: nowrap">
+            <div class="col-3">
+                <div class="row">
+                    <span class="pr-1">выдать горючего</span>
+                    <div class="col u-cell text-center">{{wb.fuel_issued}}</div>
+                    <span class="pl-1">литров</span><br>
+                 </div>
+                <div class="row pt-3">
+                    <span class="pr-1"><strong>Диспетчер</strong></span>
+                    <div class="col-2 u-cell mr-2 sign"></div>
+                    <div class="col-6 u-cell"><span class="sign-en" style="top: 90%; left: 18%;">(расшифровка подписи)</span>{{wb.dispatcher|default_if_none:'&nbsp;'}}</div>
+                </div>
+                <div class="row pt-3">
+                    <span>Водитель по состоянию<br>здоровья к управлению</span>
+                    <div class="col-12">
+                        <span class="pr-2">допущен</span>
+                        <div class="u-cell col-3"><span class="sign-en" style="top: 10%; left: 15%;">(должность)</span></div>
+                        <div class="u-cell col-2 mx-2 sign"></div>
+                        <div class="u-cell col-5"><span class="sign-en" style="top: 10%; left: 15%;">(расшифровка подписи)</span></div>
+                    </div>
+                    
+                </div>
+                <p class="pt-4">Место для<br>штампа</p>
+            </div>
+            <div class="col-5 pl-5">
+                <div class="row">
+                    <div class="col-4 mr-4">Автомобиль технически исправен</div>
+                    <div class="col u-cell"></div>
+                </div>
+                <div class="row pt-1">
+                    <div class="col-3">Выезд разрешен.</div>
+                    <div class="col-1 mr-3"><strong>Механик</strong></div>
+                    <div class="col-2 u-cell mr-2"><span class="sign-en" style="top: 90%; left: 25%;">(подпись)</span></div>
+                    <div class="col u-cell"><span class="sign-en" style="top: 10pt; left: 26%;">(расшифровка подписи)</span>{{wb.check_out_allow}}</div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-3">Автомобиль принял.</div>
+                    <div class="col-1 mr-3"><strong>Водитель</strong></div>
+                    <div class="col-2 u-cell mr-2"><span class="sign-en" style="top: 90%; left: 25%;">(подпись)</span></div>
+                    <div class="col u-cell"><span class="sign-en" style="top: 10pt; left: 26%;">(расшифровка подписи)</span>{{wb.car_took}}</div>
+                </div>
+                
+                
+                <div class="row pt-4">
+                    <div class="col-4">При возвращении автомобиль</div>
+                    <div class="col-2 u-cell text-center">исправен
+                    <span style="position: absolute; top:90%; left: 20%;">неисправен</span>
+                    </div>
+                    
+                </div>
+                <div class="row pt-2">
+                    <div class="col-1 mr-2">Сдал</div>
+                    <div class="col-1 mr-3"><strong>Водитель</strong></div>
+                    <div class="col-2 u-cell mr-2"><span class="sign-en" style="top: 90%; left: 25%;">(подпись)</span></div>
+                    <div class="col u-cell"><span class="sign-en" style="top: 10pt; left: 30%;">(расшифровка подписи)</span>{{wb.auto_passed}}</div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-1 mr-2">Принял</div>
+                    <div class="col-1 mr-3"><strong>Механик</strong></div>
+                    <div class="col-2 u-cell mr-2"><span class="sign-en" style="top: 90%; left: 25%;">(подпись)</span></div>
+                    <div class="col u-cell"><span class="sign-en" style="top: 10pt; left: 30%;">(расшифровка подписи)</span>{{wb.auto_accept}}</div>
+                </div>
+            </div>
+            <div class="col pl-4">
+                <div class="row pt-3">
+                    <div class="col-3 text-center">
+                    Отметки организации-владельца<br>
+                        автотранспорта
+                    </div>
+                    <div class="col-9 u-cell"></div>
+                </div>
+                <div class="row py-1"><div class="col u-cell">&nbsp;</div></div>
+                <div class="row py-1"><div class="col u-cell">&nbsp;</div></div>
+                <div class="row py-1"><div class="col u-cell">&nbsp;</div></div>
+                <div class="row py-1"><div class="col u-cell">&nbsp;</div></div>
+            </div>
+        </div>
+	</div>
+    <div style="page-break-after: always;"></div>
+      
+      
+                <!-- Page 2 -->
+      
+    <div class="page text-center py-5" id="page-2">
+        <div class="row"><div class="col text-right" style="font-size: 9pt;">Оборотная сторона формы № 4-С</div></div>
+        <div class="row" style="height: 230pt;">
+            <div class="col" style="height: 100%;">
+                
+                <table class="tasks-table table" height="100%">
+                    <style>
+                        
+                        .tasks-table thead {border: 3px double;}
+                        .tasks-table td {
+                            border: 1px solid;
+                        }
+                        
+                        
+                        .tasks-table tfoot td {border: 0; padding:0 !important;}
+                    </style>
+                    <thead>
+                        <tr>
+                            <td colspan="12" class="py-1" style="font-size: 10pt;"><p>ПОСЛЕДОВАТЕЛЬНОСТЬ ВЫОЛНЕНИЯ ЗАДАНИЯ</p></td>
+                            <td rowspan="3" width="10%">Условия</td>
+                            <td rowspan="3" width="10%">Подпись и печать<br>грузоотправителя<br>(грузополучателя)</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">маршрут</td>
+                            <td rowspan="2" width="3%">номер<br>ездки</td>
+                            <td colspan="3">убытие</td>
+                            <td colspan="2">прибытие</td>
+                            <td colspan="3">Расход ГСМ на пройденное</td>
+                            <td rowspan=2>Вид работ</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2" width="10%">место отправки</td>
+                            <td width="10%">место назначения</td>
+                            <td width="4%">число</td>
+                            <td width="4%">ч.</td>
+                            <td width="4%">мин.</td>
+                            <td width="4%">ч.</td>
+                            <td width="4%">мин.</td>
+                            <td width="4%">км</td>
+                            <td width="4%">норма</td>
+                            <td width="4%">итого</td>
+                        </tr>
+                        <tr><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td><td>32</td><td>33</td><td>34</td><td>35</td><td>36</td>
+                        <td>37</td><td>38</td><td>39</td></tr>
+                    </thead>
+                    <tbody style="border-left:3px double; border-right:3px double;">
+                            {% for task in wb.tasks.all %}
+                                <tr height="20%">
+                                    <td>{{task.from_dest}}</td>
+                                    <td>{{task.to_dest}}</td>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{task.departure|date:'d.m.Y'}}</td>
+                                    <td>{{task.departure|date:'H'}}</td>
+                                    <td>{{task.departure|date:'i'}}</td>
+                                    <td>{{task.arrival|date:'H'}}</td>
+                                    <td>{{task.arrival|date:'i'}}</td>
+                                    <td>{{task.distance}}</td>
+                                    <td>{{task.get_rate}}</td>
+                                    <td>{{task.total_fuel}}</td>
+                                    <td>{{task.kind}}</td>
+                                    <td>{{task.get_conditions_display}}</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            {% endfor %}
+                            {% with wb.tasks.count|subtract:'5' as c %}
+								
+								{% for i in 'x'|rjust:c %}
+								
+									<tr height="5%"><td>&nbsp;</td><td>&nbsp;</td><td></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></td><td>&nbsp;</td></tr>
+								
+								{% endfor %}
+							{% endwith %}
+							
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" class="text-right">Всего &nbsp;</td>
+                            <td style="border: 3px solid; border-top: 0;">{{wb.tasks.count}}</td>
+                            <td colspan="5" class="px-2 text-right">Всего км &nbsp;</td>
+                            <td style="border: 3px solid;">{{wb.total_km}}</td>
+                            <td class="px-2 text-right">Всего л &nbsp;</td>
+                            <td style="border: 3px solid;">{{wb.total_fuel}}</td>
+                            <td class="text-right">ТТД в количестве<span class="b-border ml-2" style="width: 50px; display: block; float: right; border-top: 0;">&nbsp;</span></td>
+                            <td colspan="2" class=" text-left"><div class="u-cell mx-2" style="width: 100px;"><span class="sign-en" style="left: 20pt; top:11pt;">(прописью)</span>&nbsp;</div> шт.</td>
+                        </tr>
+                    </tfoot>
+                </table>
+               </div> 
+           
+        </div>
+        <div class="row py-3">
+            <div class="col-4 text-right">
+                <strong style="font-size: 10pt; display: inline-block;">Таксировка</strong>
+            </div>
+            <div class="col" style="white-space: nowrap;">
+                <span>Сдал водитель</span>
+                <span class="u-cell mx-1" style="width: 40pt;">&nbsp;<span class="sign-en" style="top:10pt; left: 8pt;">(подпись)</span></span>
+                <span class="u-cell mx-1" style="width: 100pt;">{{wb.driver}}<span class="sign-en" style="top:10pt; left: 18pt;">(расшифровка подписи)</span></span>
+                <span>Принял диспетчер</span>
+                <span class="u-cell mx-1" style="width: 40pt;">&nbsp;<span class="sign-en" style="top:10pt; left: 8pt;">(подпись)</span></span>
+                <span class="u-cell mx-1" style="width: 100pt;">{{wb.dispatcher|default_if_none:'&nbsp;'}}<span class="sign-en" style="top:10pt; left: 18pt;">(расшифровка подписи)</span></span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-5">
+                <table class="table text-left">
+                    <tr>
+                        <td>Особые отметки:</td>
+                        <td style="border-bottom: 1px solid; width: 78%;"></td>
+                    </tr>
+                    <tr><td colspan="2" style="border-bottom: 1px solid; width: 75%;">&nbsp;</td></tr>
+                    <tr><td colspan="2" style="border-bottom: 1px solid; width: 75%;">&nbsp;</td></tr>
+                    <tr><td colspan="2" style="border-bottom: 1px solid; width: 75%;">&nbsp;</td></tr>
+                </table>
+            </div>
+            <div class="col pl-2">
+                <table class="table st-table">
+                    <style>
+                        .st-table td {border: 1px solid;}
+                        .st-table tr:last-child td {border-bottom: 0;}
+                    </style>
+                    <tr>
+                        <td colspan="4">Простои на линии</td>
+                        <td width="15%" rowspan="3">Подпись<br>ответст-<br>венного лица</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">причина</td>
+                        <td colspan="2">дата (число, месяц), время, ч. мин.</td>
+                    </tr>
+                    <tr>
+                        <td>наименование</td>
+                        <td width="10%">код</td>
+                        <td width="20%">начало</td>
+                        <td width="20%">окончание</td>
+                    </tr>
+                    <tr>
+                        <td>41</td><td>42</td><td>43</td><td>44</td><td>45</td>
+                    </tr>
+                    <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-result" style="border-top: 3px double;">
+                    <style>
+                        .table-result td {
+                            border: 1px solid;
+                        }
+                    </style>
+                    <thead>
+                        <tr>
+                            <td colspan="21" style="font-size: 11pt;"><p>РЕЗУЛЬТАТЫ РАБОТЫ АВТОМОБИЛЯ И ПРИЦЕПОВ</p></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">расход горючего, л</td>
+                            <td colspan="7">время в наряде, ч. мин.</td>
+                            <td colspan="2">количество</td>
+                            <td colspan="4">пробег, км</td>
+                            <td colspan="2">перевезено, т</td>
+                            <td colspan="2">выполнено, ткм</td>
+                            <td colspan="2">зарплата</td>
+                        </tr>
+                        <tr>
+                            <td width='4%' rowspan="4">по норме</td>
+                            <td width='4%' rowspan="4">факти-<br>чески</td>
+                            <td colspan="2">всего</td>
+                            <td colspan="5">в том числе автомобиля</td>
+                            <td rowspan="4">ездок</td>
+                            <td rowspan="4">заездов</td>
+                            <td colspan="2">общий</td>
+                            <td colspan="2">в том числе с грузом</td>
+                            <td rowspan="4">всего</td>
+                            <td rowspan="4">в том<br>числе на<br>прице-<br>пах</td>
+                            <td rowspan="4">всего</td>
+                            <td rowspan="4">в том<br>числе на<br>прице-<br>пах</td>
+                            <td>код</td>
+                            <td>сумма, руб. коп.</td>
+                        </tr>
+                        <tr>
+                            <td width='4%' rowspan="3">автомо-<br>биля</td>
+                            <td width='5%' rowspan="3">прицепа</td>
+                            <td width='5%' rowspan="3">в движении</td>
+                            <td colspan="4">в простое</td>
+                            <td rowspan="3">автомо-<br>биля</td>
+                            <td rowspan="3">прицепа</td>
+                            <td rowspan="3">автомо-<br>биля</td>
+                            <td rowspan="3">прицепа</td>
+                            <td>65</td>
+                            <td>66</td>
+                        </tr>
+                        <tr>
+                            <td width='4%' rowspan="2">всего</td>
+                            <td colspan="2">под погрузкой, разгрузкой</td>
+                            <td>по техническим<br>неисправностям</td>
+                            <td></td><td></td>
+                        </tr>
+                        <tr>
+                            <td width='4%'>всего</td>
+                            <td width='4%'>сверхнормат.</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                      
+                        <tr>
+                            <td>46</td><td>47</td><td>48</td><td>49</td><td>50</td><td>51</td><td>52</td><td>53</td><td>54</td><td>55</td><td>56</td><td>57</td><td>58</td><td>59</td><td>60</td><td>61</td><td>62</td><td>63</td><td>64</td><td>&nbsp;</td><td>&nbsp;</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td>{{wb.total_fuel}}</td><td>{{wb.total_fuel}}</td><td>{{wb.total_hours}}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row pt-2 text-left" style="white-space: nowrap; font-size: 9pt;">
+            <div class="col-3 text-center">
+                <span class="pr-4">Коды марок:</span>
+                <span class="pr-3">Автомобиля</span>
+                <span class="b-border py-1" style="width: 50pt; display: inline-block;">&nbsp;</span>
+            </div>
+            <div class="col-3">
+                <span class="float-left pt-2 pr-2" >Прицепов</span>
+                <span class="py-1 float-left" style="border: 1px solid; display: inline-block; width: 50pt;">&nbsp;</span>
+                <span class="py-1 float-left" style="border: 1px solid; display: inline-block; width: 50pt; border-left: 0; border-right: 0;">&nbsp;</span>
+                <span class="py-1 float-left" style="border: 1px solid; display: inline-block; width: 50pt;">&nbsp;</span>
+            </div>
+            <div class="col-2 pl-3" style="line-height: 1.2;">
+                <span class="pr-2 float-left" style="display: inline-block;">Автомобиль,<br>дни в работе</span>
+                <span class="b-border py-1 px-4" style="display: inline-block;">&nbsp;</span>
+            </div>
+            <div class="col-3 text-left">
+                <span class="pr-1">Таксировщик</span>
+                <span style="border-bottom: 1px solid; width: 35pt; display: inline-block; vertical-align: text-bottom;">&nbsp;
+                    <span class="sign-en" style="top: 13pt; left: 32%;">(подпись)</span>
+                </span>
+                <span style="border-bottom: 1px solid; width: 75pt; display: inline-block; vertical-align: text-bottom;">&nbsp;
+                    <span class="sign-en" style="top: 13pt; right: 20%;">(расшифровка подписи)</span>
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+$(document).ready(function(){window.print();});
+</script>
+</html>

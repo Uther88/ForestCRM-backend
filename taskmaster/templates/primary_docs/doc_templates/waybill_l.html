@@ -1,0 +1,478 @@
+{% load static from staticfiles %}
+{% load math %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src='{% static "js/jquery-3.2.0.min.js" %}'></script>
+		<script src='{% static "js/tether.js" %}'></script>
+		<script src='{% static "js/bootstrap.js" %}'></script>
+		<link rel="stylesheet" href='{% static "css/tether.css" %}'>
+		<link rel="stylesheet" href='{% static "css/bootstrap.css" %}'>
+		<link rel="stylesheet" href='{% static "css/style.css" %}'>
+        
+		<style type="text/css" media="print">
+			 @page .page{
+			 		size:11 8.5in;
+				    margin:.5in 13.6pt 0in 13.6pt;
+			
+				}
+
+		</style>
+		<style type="text/css">
+			body { font-family: "Arial"; font-size: 9px; }
+			* { padding: 0 !important; margin: 0 !important;  }
+			.pr_wrp { white-space: pre-line;  }
+			.pre { white-space: pre; }
+			.no_wrp { white-space: nowrap; }
+			.text-sm {font-size: 8px;}
+			p.text-sm { font-size: 8px; line-height: 0.9em; }
+			span.text-sm { font-size: 6px; font-weight: normal; }
+			.text-bold { font-weight: bold;}
+			.l-cell { outline: 1px solid gray; line-height: 1.6; padding: 1px 0 !important;}
+			.b-cell { outline: 2px solid black; line-height: 1.6; padding: 1px 0 !important;}
+			.i-cell { outline: 2px solid white;  line-height: 1.6; padding: 1px 0 !important;}
+			.h-cell { visibility: hidden; line-height: 1.6; padding: 1px 0 !important;}		
+			.field { border-bottom: 1px solid gray; padding-top: 2px !important; line-height: 1.6; }
+			.label { font-size: 8px; padding: 1px 0 !important; line-height: 2;}
+			.line-sm { line-height: 1.2; }
+			.line-md { line-height: 1.2; }
+
+			#tasks-table {width: 100%;}
+
+			#tasks-table, #tasks-table th {
+				border: 2px solid black;
+				font-weight: normal;
+
+			}
+			#tasks-table td {
+				border-left: 2px solid black;
+				border-bottom: 1px solid black;
+			}
+		</style>
+
+	</head>
+	<body>
+		<div class="page container-fluid text-center">
+			<div class="row">
+				<div class="col-md-6 p-3">
+					<div class="row">
+						<div class="col-md-6">
+							<p class="pr_wrp text-sm float-left">
+								Место для
+								штампа
+								организации
+							</p>
+						</div>
+						<div class="col-md-6 text-right">
+							<p class="pr_wrp text-sm">
+								Типовая форма № 3 
+								Утверждена постановлением Госкомстата Роcсии
+								от 28.11.97 №78
+							</p>
+						</div>
+					</div>
+
+					<div class="row text-bold">
+						<div class="col-md-8 text-right p-0">
+								<p style="font-size: 9pt;">ПУТЕВОЙ ЛИСТ ЛЕГКОВОГО АВТОМОБИЛЯ</p>
+						</div>
+						<div class="col-md-1 p-0">
+							<span class="pre px-2" style="border-bottom: 1px solid;">{{wb.station.series}}</span><br>				<!-- station -->
+							<span class="text-sm">серия</span>
+						</div>
+						<div class="col-md-2 p-0 text-left">				                                      <!-- number -->
+							№ <span class="pre px-3" style="border-bottom: 1px solid;">{{wb.number}}</span><br>
+						</div>
+
+					</div>
+
+					<dir class="row">
+						<div class="col-md-8">
+							<p class="mb-3">{{wb.date|date:'"d" E Y г.'}}</p>						<!-- date -->
+							<div class="row">
+								<div class="label">Организация</div>
+								<div class="col field">
+									{{wb.organization}}				<!-- organization -->
+								</div>  
+							</div>
+							<span class="text-sm ml-5">(наименование, адрес, номер телефона)</span>
+							<div class="row">
+								<div class="label">Марка автомобиля</div>
+								<div class="col field">
+									{{wb.car.name}}									<!-- car name -->
+								</div>
+							</div>
+							<div class="row">
+								<div class="label">Гос. номерной знак</div>
+								<div class="col field">
+									{{wb.car.number}}									<!-- car number -->
+								</div>
+							</div>
+							<div class="row">
+								<div class="label">Водитель</div>
+								<div class="col field">
+									{{wb.driver}}							<!-- driver -->
+								</div>
+							</div>
+							<span class="text-sm ml-5">(фамилия, имя, отчество)</span>
+						</div>
+						<div class="col-md-4">
+							<div class="row mini-table no_wrp">
+								<div class="col text-right pr-2">
+									<div class="h-cell">1</div>
+									<div class="i-cell pr-1">Форма по ОКУД</div>
+									<div class="i-cell pr-1">по ОКПО</div>
+								</div>
+								<div class="col text-center">
+									<div class="l-cell">Коды</div>
+									<div class="b-cell">
+										<div class="l-cell">0345001</div>
+										<div class="l-cell">00983072</div>
+									</div>
+								</div>
+							</div>
+							<br>
+							<div class="row mini-table no_wrp">
+								<div class="col text-right pr-2">
+									<div class="h-cell">1</div>
+									<div class="i-cell">Гаражный номер</div>
+									<div class="i-cell">Табельный номер</div>
+								</div>
+								<div class="col">
+									<div class="b-cell text-white">
+										<div class="l-cell">&nbsp;</div>
+										<div class="l-cell">&nbsp;</div>
+										<div class="l-cell">&nbsp;</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</dir>
+					<div class="row">
+						<div class="label">Удостоверение №</div>
+						<div class="col-md-3 field"></div>
+							<div class="label">Класс</div>
+							<div class="col-md-3 field"></div>
+					</div>
+					<div class="row">
+						<div class="label">Лицензионная карточка</div>
+						<div class="col-md-6 field">
+							стандартная, <strike>ограниченная</strike>
+						</div>
+						<span class="text-sm col-md-10">ненужное зачеркнуть</span>
+					</div>
+					<div class="row pr-3 pre">
+						<div class="label">Регистрационный №  </div>
+						<div class="col field"></div>
+						<div class="label">  Серия  </div>
+						<div class="col field"></div>
+						<div class="label">  №  </div>
+						<div class="col field"></div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-md-7">
+							<div class="text-bold"><b>Задание водителю</b></div>
+							<div class="row">
+								<div class="label">В распоряжение</div>
+								<div class="col field">
+									{{wb.organization}}							<!-- organization -->
+								</div>
+							</div>
+							<span class="text-sm ml-4 text-right">наименование организации</span>
+							<div class="row">
+								<div class="label">Адрес подачи</div>
+								<div class="col field">
+									{{wb.tasks.all.0.from_dest}} - {{wb.tasks.all.0.to_dest}}					<!-- from - to -->
+								</div>
+							</div>
+							<div class="row pre"><div class="col field"> </div></div>
+							<div class="row pre"><div class="col field"> </div></div>
+							<div class="row mt-2">
+								<div class="label">Время выезда из гаража, ч. мин.</div>
+								<div class="col-3 ml-auto">
+									<div class="b-cell">
+										{{wb.dep_date|date:'H:i'}}
+									</div>												<!-- dep_time -->
+								</div>
+							</div>
+							<div class="row">
+								<div class="label">Диспетчер - нарядчик</div>
+								<div class="col-2 field"></div>
+								<div class="col field ml-2">
+								{{wb.dispatcher|default:''}}										<!-- dispatcher -->
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-1"></div>
+								<span class="text-sm col ml-3">подпись</span>
+								<span class="text-sm col mr-2">расшифровка подписи</span>
+							</div>
+							<div class="row mt-1">
+								<div class="label">Время возвращения в гараж, ч,</div>
+								<div class="col-3 b-cell ml-auto">
+									<div class="b-cell">
+										{{wb.ret_date|date:'H:i'}}
+									</div>												<!-- ret time -->
+								</div>
+							</div>
+							<div class="row">
+								<div class="label">Диспетчер - нарядчик</div>
+								<div class="col-2 field"></div>
+								<div class="col field ml-2">
+									{{wb.dispatcher|default:''}}										<!-- dispatcher -->
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-1"></div>
+								<span class="text-sm col ml-3">подпись</span>
+								<span class="text-sm col mr-2">расшифровка подписи</span>
+							</div>
+							<div class="row mt-4"><div class="col field"></div></div>
+							<div class="row text-left">
+								<div class="label">
+									Опоздания, ожидания, простои в пути, заезды в гараж и прочие отметки
+								</div>
+								<div class="col field"></div>
+							</div>
+							<div class="row mt-3"><div class="col field"></div></div>
+							<div class="row mt-3"><div class="col field"></div></div>
+							<div class="row mt-3"><div class="col field"></div></div>
+							<div class="row text-left">
+								<div class="label text-bold">Автомобиль сдал<br> водитель</div>
+								<div class="col-2 field"></div>
+								<div class="col field ml-2 mt-3 text-center">
+									{{wb.auto_passed}}																<!-- auto passed -->
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-1"></div>
+								<span class="text-sm col ml-2">подпись</span>
+								<span class="text-sm col mr-3">расшифровка подписи</span>
+							</div>
+							<div class="row">М.П.</div>
+
+						</div>
+
+
+						<div class="col-md-5 text-center pl-2">
+							<div class="row"><div class="col">Автомобиль технически<br> исправен</div></div>
+							<div class="row">
+								<div class="label">Показания спидометра</div>
+								<div class="col-5 ml-auto">
+									<div class="b-cell">{{wb.dep_km}}</div>												<!-- fuel dep_km -->
+								</div>
+							</div>
+							<div class="row">
+								Выезд разрешен
+							</div>
+							<div class="row">
+								<div class="label text-bold">Механик</div>
+								<div class="col-2 field"></div>
+								<div class="col field ml-2">
+									{{wb.check_out_allow}}															<!-- check out allow -->
+								</div>									
+							</div>
+							<div class="row text-left">
+								<span class="col-2"></span>
+								<span class="text-sm col ml-2">подпись</span>
+								<span class="text-sm col mr-4">расшифровка подписи</span>
+							</div>
+							<div class="row text-left line-md">
+								Автомобиль в технически<br> исправном состоянии принял
+							</div>
+							<div class="row">
+								<div class="label text-bold">Водитель</div>
+								<div class="col-2 field"></div>
+								<div class="col field ml-2">
+									{{wb.car_took}}																<!-- car took -->
+								</div>	
+							</div>
+							<div class="row text-left">
+								<span class="col-2"></span>
+								<span class="text-sm col ml-2">подпись</span>
+								<span class="text-sm col mr-4">расшифровка подписи</span>
+							</div>
+							<div class="row">
+								<div class="label col-4">Горючее</div>
+								<div class="col b-cell">
+									<div class="row">
+										<div class="l-cell col">марка</div>
+										<div class="l-cell col">код</div>
+									</div>
+									<div class="row">
+										<div class="l-cell col">
+											{{wb.car.fuel.mark}}
+										</div>																		<!-- fuel -->
+										<div class="col b-cell">
+											{{wb.car.fuel.code|default:''}}
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row text-bold">
+								<div class="col">Движение горючего</div>
+							</div>
+							<div class="row">
+								<div class="col "></div>
+								<div class="l-cell col-5">количество, л</div>
+							</div>
+							<div class="row">
+								<div class="col-7 text-left pr-1">
+									<div class="label line-sm" style="padding: 5px 0!important;">Выдано по заправочному<br> листу №</div>
+									<div class="label">Остаток: при выезде</div>
+									<div class="label text-right">при возвращении</div>
+									<div class="label">Расход: по норме</div>
+									<div class="label text-right">фактически</div>
+									<div class="label">Экономия</div>
+									<div class="label">Перерасход</div>
+								</div>
+								<div class="col b-cell">
+									<div class="row"><div class="col pre field" style="line-height: 3;">{{wb.fuel_issued}}</div></div>		<!-- fuel issued -->
+									<div class="row"><div class="col pre field">{{wb.fuel_balance_on_dep}}</div></div>								<!-- fuel_balance_on_dep -->
+									<div class="row"><div class="col pre field">{{wb.fuel_balance_on_ret}}</div></div>								<!--  fuel_balance_on_ret -->
+									<div class="row"><div class="col pre field">{{wb.total_fuel}}</div></div>								<!-- total fuel -->
+									<div class="row"><div class="col pre field">{{wb.total_fuel}}</div></div>								<!-- total_fuel -->
+									<div class="row"><div class="col pre field">&nbsp;</div></div>
+									<div class="row"><div class="col pre field">&nbsp;</div></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col text-left label" style="line-height: 1.2">
+									Автомобиль принял. Показания спидометра при возвращении в 
+								</div>
+							</div>
+							<div class="row">
+								<div class="text-left label" style="line-height: 0.5;">гараж, км</div>
+								<div class="col-5 ml-auto">
+									<div class="b-cell">{{wb.ret_km}}</div>                                    <!-- ret_km -->
+								</div>
+							</div>
+							<div class="row">
+								<div class="label text-bold">Механик</div>
+								<div class="col-2 field"></div>
+								<div class="col field ml-2">
+									{{wb.auto_accept}}																<!-- car accept -->
+								</div>	
+							</div>
+							<div class="row text-left">
+								<span class="col-2"></span>
+								<span class="text-sm col ml-2">подпись</span>
+								<span class="text-sm col mr-4">расшифровка подписи</span>
+							</div>
+						</div>
+						
+					</div>
+					
+
+				</div>
+
+				<div class="col-md-6 p-3">		 							<!-- Second Page -->
+					<div class="row text-right">
+						<div class="col">Обратная сторона формы № 3</div>
+					</div>
+					<div id="row" style="height: 60%;">
+						<table id="tasks-table" class="mx-auto mt-3">
+							<thead>
+								<tr>
+									<th rowspan="3" width="3" >Номер по порядку</th>
+									<th rowspan="3" width="3">Код заказчика</th>
+									<th colspan="2">Место</th>
+									<th colspan="4">Время</th>
+									<th rowspan="3" width="3" class="p-1">Пройдено, км</th>
+									<th rowspan="3" width="5" class="p-1">Попдись лица пользовавшегося автомобилем</th>
+
+								</tr>
+								<tr>
+									<th rowspan="2" class="p-2">отправления</th>
+									<th rowspan="2" class="p-3">назначения</th>
+									<th colspan="2" class="p-1">выезда</th>
+									<th colspan="2" class="p-1">возвращения</th>
+									
+								</tr>
+								<tr>
+									<th class="p-2">ч</th>
+									<th class="p-1">мин</th>
+									<th class="p-2">ч</th>
+									<th class="p-1">мин</th>
+								</tr>													
+							</thead>
+							<tbody>
+								{% for task in wb.tasks.all %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{task.customer.series}}</td>
+                                        <td>{{task.from_dest}}</td>
+                                        <td>{{task.to_dest}}</td>
+                                        <td>{{task.departure|date:'H'}}</td>
+                                        <td>{{task.departure|date:'i'}}</td>
+                                        <td>{{task.arrival|date:'H'}}</td>
+                                        <td>{{task.arrival|date:'i'}}</td>
+                                        <td>{{task.distance}}</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                {% endfor %}
+                                
+								{% with wb.tasks.count|subtract:'18' as c %}
+								
+                                {% for i in 'x'|rjust:c %}
+                                
+									<tr><td>{{forloop.counter|add:wb.tasks.count}}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                
+                                {% endfor %}
+                                {% endwith %}
+                                
+							</tbody>
+						</table>
+					</div>
+					<div class="row">
+						<div class="col text-left">
+							<strong>Результат работы автомобиля за смену:</strong>
+							<div class="row py-2">
+								<div class="label">всего в наряде, ч</div>
+								<div class="b-cell col-3 text-center ml-auto">{{wb.total_hours}}</div>
+							</div>
+							<div class="row py-2">
+								<div class="label">пройдено, км</div>
+								<div class="b-cell col-3 text-center ml-auto">{{wb.total_km}}</div>
+							</div>
+						</div>
+
+						<div class="col text-left ml-3">
+							<strong class="ml-4">Расчет зароботной платы:</strong>
+							<div class="row py-2">
+								<div class="label">за километраж, руб. коп.</div>
+								<div class="b-cell col-3 text-center ml-auto"></div>
+							</div>
+							<div class="row pt-2 pb-3" style="border-bottom: 1px solid black;">
+								<div class="label">за часы, руб. коп</div>
+								<div class="b-cell col-3 text-center ml-auto"></div>
+							</div>
+							<div class="row mt-3">
+								<div class="label">Итого, руб. коп.</div>
+								<div class="b-cell col-3 text-center ml-auto"></div>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-3">				
+						<div class="label text-left mr-2">Расчет произвел</div>
+						<div class="field col"></div>
+						<div class="field col mx-2"></div>
+						<div class="field col"></div>						
+					</div>
+					<div class="row">
+						<div class="col-2"></div>
+						<span class="text-sm col mr-5">должность</span>
+						<span class="text-sm col mr-5">подпись</span>
+						<span class="text-sm col mr-2">расшифровка подписи</span>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</body>
+	<script>
+		$(document).ready(function(){window.print();});
+		</script>
+</html>

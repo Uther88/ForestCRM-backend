@@ -1,0 +1,151 @@
+{% load static from staticfiles %}
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name=viewport content="width=device-width,initial-scale=1">
+		<script src='{% static "js/jquery-3.2.0.min.js" %}'></script>
+		<script src='{% static "js/tether.js" %}'></script>
+		<script src='{% static "js/bootstrap.js" %}'></script>
+		<link rel="stylesheet" href='{% static "css/tether.css" %}'>
+		<link rel="stylesheet" href='{% static "css/bootstrap.css" %}'>
+		<link rel="stylesheet" href='{% static "css/style.css" %}'>
+		<link rel="stylesheet" href='{% static "css/font-awesome.min.css" %}'>		
+		<title>
+			TaskMaster |
+			{% block title %}
+			{% endblock %}
+		</title>
+	</head>
+	<body onload="startTime();">
+		<div id="container" class="container d-flex justify-content-center align-items-stretch">
+			<div class="card text-center" id="main">
+				<div class="card-header p-0 text-left d-flex justify-content-between">
+					<div id="logo" class="d-flex align-items-md-end align-items-sm-center justify-content-sm-center flex-md-row flex-sm-column">
+						<div class="logo-image m-1"></div>
+						<div class="logo-text h3 p-2">
+							<a href='/' id="root-link">Тарасовское ГАУ РО "Лес"</a>
+						</div>
+					</div>
+					<div class="card d-flex flex-row p-2 m-2" id="info">
+						{% if user.avatar %}
+							<img src="{{ user.avatar.url }}" id="avatar" class="rounded user-pic">
+						{% else %}
+							<img src="/media/users/avatars/user.png" id="avatar" class="rounded user-pic">
+						{% endif %}
+						<div class="d-flex flex-column justify-content-center ml-2 small align-items-between">
+							<div class="d-flex justify-content-between m-1 d-block"><b>Имя</b><span>{{user.first_name}}</span></div>
+							<div class="d-flex justify-content-between m-1"><b>Фамилия</b><span>{{user.last_name}}</div></span>
+							<div class="d-flex justify-content-between m-1"><b>Отчество</b><span>{{user.third_name}}</div></span>
+							<div class="d-flex justify-content-between m-1"><b>Должность</b><span>{{user.position}}</span></div>
+							<div class="d-flex justify-content-between align-items-center pt-2 pb-2 m-1">
+								<div id="date" class="pl-1 pr-1">{% now 'd m y D' %}</div>|
+								<div id="clock" class="pl-1 pr-1"></div>|
+								<a href="/logout" class="fa fa-sign-in text-primary pl-1 pr-1" data-toggle="tooltip" data-placement="left" title="Выход" role='button'></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<nav class="navbar navbar-inverse bg-inverse">
+					<ul class="nav nav-pills">
+						<li class="nav-item">
+							<a class="nav-link text-white btn-outline-danger" href="/">
+							<i class="fa fa-home navbar-brand text-success"></i>
+							На главную
+							</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a class='nav-link dropdown-toggle text-white btn-outline-danger' href="/tasks/" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+								<i class="fa fa-tasks navbar-brand text-warning"></i>
+									
+								Задачи 
+								{% with new_tasks=user.get_new_tasks %}
+									{% if new_tasks > 0 %}
+										<span class="badge badge-success" id="task_counter">{{ new_tasks }}</span>
+									{% else %}
+										<span class="badge badge-success" id="task_counter"></span>
+									{% endif %}
+									
+								 {% endwith %}
+							</a>
+							<div class="dropdown-menu bg-inverse">
+								<a class="dropdown-item" href="{% url 'create_task' %}">Создать задачу</a>
+								<a class="dropdown-item" href="{% url 'get_tasks' dist='inc' %}?status=uncompleted">Мои задачи</a>
+								<a class="dropdown-item" href="{% url 'get_tasks' dist='out' %}">Назначенные мною</a>
+								{% if user.is_staff %}
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="{% url 'get_tasks' dist='all' %}">Все задачи</a>
+								{% endif %}
+							</div>
+						</li>
+						<li class="nav-item dropdown">
+							<a class='nav-link dropdown-toggle text-white btn-outline-danger' id="dropdownMenu" href="/messages/inbox/" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+								<i class="fa fa-envelope navbar-brand text-danger"></i>
+								Сообщения
+								{% with new_messages=user.get_new_messages %}
+									{% if new_messages > 0 %}
+										<span class="badge badge-success" id="message_counter">{{ new_messages }}</span>
+									{% else %}
+										<span class="badge badge-success" id="message_counter"></span>
+									{% endif %}
+								 {% endwith %}
+							</a>
+							<div class="dropdown-menu bg-inverse" aria-labelledby="dropdownMenu">
+								<a class="dropdown-item" href="{% url 'get_messages' dist='inbox' %}">Входящие</a>
+								<a class="dropdown-item" href="{% url 'get_messages' dist='sent' %}">Исходящие</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" role='button' id="newMessageButton" data-toggle="modal" data-target="#newMessageModal">Создать новое</a>
+							</div>
+								<div class="modal fade" id="newMessageModal" role="dialog">
+								  <div class="modal-dialog" role="document">
+									<div class="modal-content">
+									  <div class="modal-header bg-success text-white">
+										<h5 class="modal-title" id="new-message-title">Новое сообщение</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										  <span aria-hidden="true">&times;</span>
+										</button>
+									  </div>
+									  <div class="modal-body">
+											<form method="POST" enctype="multipart/form-data" id="new-message-form" action="/messages/new">
+											{% csrf_token %}
+											<input type="hidden" name='next' value="{{ request.path_info }}" >
+											<div class="form-group">
+											</div>
+											</form>
+									  </div>
+									  <div class="modal-footer">
+										<button type="submit" form="new-message-form" role="button" class="btn btn-success">Отправить</button>
+										<button type="button" class="btn btn-danger" role="button" data-dismiss="modal">Закрыть</button>
+										</div>
+									  </div>
+									</div>
+								  </div>
+						</li>
+						<li class="nav-item">
+							<a href="{% url 'get_employees' %}" class='nav-link text-white btn-outline-warning'>
+								<i class="fa fa-users navbar-brand text-success"></i>Сотрудники</a>
+						</li>
+								<li class="nav-item dropdown">
+							<a class='nav-link dropdown-toggle text-white btn-outline-danger' href="/docs/" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+								<i class="fa fa-file navbar-brand text-warning"></i>								
+								Документы
+							</a>
+							<div class="dropdown-menu bg-inverse">
+								<a class="dropdown-item" href="{% url 'waybills' %}">Путевые листы</a>
+								<a class="dropdown-item" href="{% url 'new_outfit' %}">Наряд-акты</a>
+							</div>
+						</li>
+					</ul>
+				</nav>
+				<div class="card-block p-0 pr-2 pl-2" id="content">
+					{% block content %}
+					{% endblock %}
+				</div>
+				<div class="card-footer bg-inverse flex-row mt-auto">
+						<a href="/logout" class="btn btn-outline-danger text-white fa fa-sign-in" data-toggle="tooltip" data-placement="right" title="Выход" role='button'></a>
+				</div>
+			</div>
+		</div>
+	</body>
+			<script src='{% static "js/main.js" %}'></script>
+</html>

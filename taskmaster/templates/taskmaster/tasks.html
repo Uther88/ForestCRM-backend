@@ -1,0 +1,86 @@
+{% extends 'taskmaster/base.html' %}
+
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+{% block content %}
+	<div class="d-flex justify-content-center p-2 align-items-center">
+		<div class="mr-auto ml-5">
+			<a class="btn btn-outline-danger fa fa-thumbs-down" data-toggle="tooltip" title="Не выполненные задачи" href='?status=uncompleted'></a>
+			<a class="btn btn-outline-success fa fa-thumbs-up" data-toggle="tooltip" title="Выполненные задачи" href='?status=completed'></a>
+		</div>	
+		<div class="m-auto"><b>{{title}}</b></div>
+		<div class="">
+			<form method="GET" action="{{request.path_info}}" class='form-inline form-control-sm'>
+				<div class="form-group">
+					<div class="input-group-sm d-inline-flex align-items-center">
+						<div class="input-group-sm d-flex flex-column align-items-end mr-2">
+							<span class="fa fa-check text-success">
+								<input type='radio' value="completed" name="status" data-toggle='tooltip' title="Выполненные">
+							</span>
+							<span class="fa fa-exclamation text-danger">
+								<input type='radio' value="uncompleted" name="status" data-toggle='tooltip' title="Не выполненные">
+							</span>
+						</div>
+					<input type="date" name='date' class='form-control mr-2' required>
+					<input type="time" name='time' class='form-control'>
+					<button type="submit" data-toggle="tooltip" title="Отфильтровать" class='fa fa-filter form-control btn btn-outline-success cursor-pointer ml-2'></button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="table-responsive">
+	<table class="table table-hover table-bordered">
+	<style type="text/css">.table th{vertical-align: middle;};</style>
+		<thead>
+			<tr>
+				<th>№</th>
+				<th class='text-center'>Операции</th>
+				<th class='text-center'>Важность</th>
+				<th class='text-center'>Статус</th>
+				<th class='text-center'>Назначающий</th>
+				<th class='text-center'>Исполнитель</th>
+				<th class='text-center'>Выполнить до</th>
+				<th class='text-center'>Назначенно</th>
+				<th class='text-center'>Заголовок</th>
+				<th class='text-center'>Файлы</th>
+			</tr>
+		</thead>
+		<tbody>
+	{% for task in tasks %}
+		<tr class="">
+			<th scope="row">{{ forloop.counter }}</th>
+			<td>
+				<a href="{% url 'task_view' pk=task.pk %}" class="rounded btn-outline-primary border-0 fa fa-eye p-1" data-toggle='tooltip' title="Просмотреть"></a>
+				{% if task.assigner == user or user.is_staff %}
+				<button class="rounded btn-outline-danger border-0" role='button' data-container='body' data-placement='top' data-trigger="focus" data-html='true' data-toggle='popover' title="Удалить?" data-content="<span role='button' onclick='taskRemove({{task.pk}});' class='p-2 fa fa-check text-success'></span><span class='p-2 fa fa-remove text-danger' role='button'></span>">
+					<span class="fa fa-trash" data-toggle="tooltip" title="Удалить"></span>
+				</button>
+			{% endif %}
+			{% if task.performer == user and not task.is_completed %}
+				<button class="rounded btn-outline-success border-0 fa fa-check" role="button" onclick="taskComplete({{task.pk}});" data-toggle="tooltip" title="Отметить как выполненное"></button>
+			{% endif %}
+			</td>
+			<td><span class="badge badge-{{task.importance}}">{{ task.get_importance_display }}</span></td>
+			<td>{% if task.get_status == 'completed' %}
+					<span class='fa fa-check text-success'></span>
+				{% elif task.get_status == 'in_process' %}
+					<span class='fa fa-hourglass text-warning'></span>
+				{% elif task.get_status == 'overdue' %}
+					<span class='fa fa-remove text-danger'></span>
+				{% endif %}
+			</td>
+			<td>{{ task.assigner.get_full_name }} </td>
+			<td>{{ task.performer.get_full_name }} </td>
+			<td>{{ task.to_complete }}</td>
+			<td>{{ task.created_date }}</td>
+			<td>{{ task.title|truncatewords:2}}</td>
+			<td>{{ task.files.count }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+	</div>
+{% endblock %}

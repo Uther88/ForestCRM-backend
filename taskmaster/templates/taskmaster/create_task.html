@@ -1,0 +1,22 @@
+{% extends 'taskmaster/base.html' %}
+
+{% block title %}
+	Создание задачи
+{% endblock %}
+
+{% block content %}
+	<div class="card m-2 d-inline-flex card-outline-primary">
+			<h4 class="card-header bg-primary text-white">
+				Новая задача
+			</h4>
+		<div class="card-block bg-faded">
+			<form method="POST" enctype="multipart/form-data" class="input-group-sm">
+				{% csrf_token %}
+				<div class="form-group">
+					{{ form.as_p }}
+					<button type="submit" role='button' class="btn btn-outline-success fa fa-check"><b class="ml-1">Сохранить</b></button>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock %}
