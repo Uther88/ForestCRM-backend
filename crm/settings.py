@@ -25,7 +25,7 @@ SECRET_KEY = 't5b%f*_3h=%3p-uk3h-%arby*gk18qx*=@=-xh(o=39esj5^+@'
 #CSRF_USE_SESSIONS = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['hostyng.ru', 'localhost', '127.0.0.1']
 

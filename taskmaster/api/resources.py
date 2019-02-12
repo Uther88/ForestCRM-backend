@@ -159,9 +159,9 @@ class MessageResource(ModelResource):
 
 class ChatResource(ModelResource):
     members = fields.ManyToManyField(UserResource, 'members', full=True)
-    messages = fields.ToManyField(
-        MessageResource,  
-        full=True, related_name="chats",
+    messages = fields.ManyToManyField(
+        MessageResource,
+        full=True,
         attribute=lambda bundle: Message.objects.filter(chats=bundle.obj)[:1]
         )
 

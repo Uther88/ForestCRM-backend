@@ -358,6 +358,7 @@ class Waybill(models.Model):
         related_name="waybills",
         verbose_name="Мероприятие",
         null=True,
+        blank=True,
         on_delete=models.PROTECT
         )
 
@@ -803,6 +804,7 @@ class Outfit(models.Model):
         related_name='outfit_deposited',
         verbose_name='Принял на ответственное хранение',
         null=True,
+        blank=True,
         on_delete=models.PROTECT
     )
 

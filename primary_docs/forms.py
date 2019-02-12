@@ -6,6 +6,7 @@ from . import models
 class DriverTaskForm(forms.ModelForm):
     arrival = forms.DateTimeField(input_formats=["%a %b %d %Y %H:%M:%S", '%Y-%m-%dT%H:%M:%S'])
     departure = forms.DateTimeField(input_formats=["%a %b %d %Y %H:%M:%S", '%Y-%m-%dT%H:%M:%S'])
+    
     class Meta:
         model = models.DriverTask
         fields = '__all__'
@@ -16,30 +17,6 @@ class WayBillForm(forms.ModelForm):
     class Meta:
         model = models.Waybill
         fields = '__all__'
-
-    def is_valid(self):
-        if super(WayBillForm, self).is_valid():
-
-            # Calc of fuel spent / Подсчет расхода топлива
-            fb_on_dep = self.cleaned_data['car'].fuel_balance
-            fuel_issued = self.cleaned_data['fuel_issued']
-            total_fuel = self.cleaned_data['total_fuel']
-            self.cleaned_data['fuel_balance_on_ret'] = fb_on_dep + fuel_issued - total_fuel
-
-            # Calc of km rate / Подсчет километража
-            dep_km = self.cleaned_data['car'].mileage
-            self.cleaned_data['dep_km'] = dep_km
-            total_km = sum([t.distance for t in self.cleaned_data['tasks']])
-            self.cleaned_data['total_km'] = total_km
-            self.cleaned_data['ret_km'] = dep_km + total_km
-
-            # Set dates of departure and arrival / Установка дат выезда и возвращения в гараж
-            start = self.cleaned_data['tasks'].first().departure
-            end = self.cleaned_data['tasks'].last().arrival
-            self.cleaned_data['dep_date'], self.cleaned_data['dep_fact'] = start, start
-            self.cleaned_data['ret_date'], self.cleaned_data['ret_fact'] = end, end
-
-            return True
 
     def __init__(self, *args, **kwargs):
         super(WayBillForm, self).__init__(*args, **kwargs)

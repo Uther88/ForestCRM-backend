@@ -231,21 +231,25 @@ class WayBillResource(ModelResource):
             'fuel_distribution': ALL_WITH_RELATIONS,
         }
 
-    def post_detail(self, request, **kwargs):
-        data = json.loads(request.body.decode('utf-8'))
-        waybill = models.Waybill.objects.get(id=data['id'])
+    def put_detail(self, request, **kwargs):
         errors = []
-        if not waybill.is_completed and request.user.is_staff:
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except Exception as e:
+            return self.error_response(request, e)
+        if data.get('id'):
+            try:
+                waybill = models.Waybill.objects.get(id=data['id'])
+            except Exception as e:
+                return self.error_response(request, e)
             data['author'] = request.user.pk
-            tasks_list = []
             for task in data['tasks']:
+                task['waybill'] = waybill.pk
                 task_form = prd_forms.DriverTaskForm(task)
                 if task_form.is_valid():
                     new_task, created = models.DriverTask.objects.get_or_create(**task_form.cleaned_data)
-                    tasks_list.append(new_task.pk)
                 else:
                     errors.append(task_form.errors)
-            data['tasks'] = tasks_list
             form = prd_forms.WayBillForm(data, instance=waybill)
             if form.is_valid():
                 waybill = form.save()
@@ -257,18 +261,7 @@ class WayBillResource(ModelResource):
                 return self.create_response(request, {'id': waybill.pk})
             else:
                 errors.append(form.errors)
-        if len(errors):
-            return self.error_response(request, errors)
-
-    def put_detail(self, request, **kwargs):
-        errors = []
-        try:
-            data = json.loads(request.body.decode('utf-8'))
-        except Exception as e:
-            return self.error_response(request, e)
-        else:
-            print(request.bundle)
-
+        return self.error_response(request, errors)
 
     def post_list(self, request, **kwargs):
         errors = []
