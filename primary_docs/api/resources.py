@@ -332,7 +332,7 @@ class OutfitResource(ModelResource):
     work_accept = fields.ForeignKey(WorkerResource, 'work_accept', full=True)
     responsible = fields.ForeignKey(WorkerResource, 'responsible', full=True)
     calculated = fields.ForeignKey(WorkerResource, 'calculated', full=True)
-    deposited = fields.ForeignKey(WorkerResource, 'deposited', full=True)
+    deposited = fields.ForeignKey(WorkerResource, 'deposited', full=True, null=True)
     organization = fields.ForeignKey(OrganizationResource, 'organization', full=True)
     station = fields.ForeignKey(StationResource, 'station', full=True)
     departament_full = fields.ApiField('get_departament_display')
