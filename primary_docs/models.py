@@ -857,8 +857,8 @@ class OutfitWork(models.Model):
         null=True,
         on_delete=models.SET_NULL
         )
-    rate = models.DecimalField('Нормы выработки', decimal_places=1, max_digits=8)
-    done = models.DecimalField('Выполнено', decimal_places=1, max_digits=8)
+    rate = models.DecimalField('Нормы выработки', decimal_places=2, max_digits=8)
+    done = models.DecimalField('Выполнено', decimal_places=2, max_digits=8)
     paragraph = models.CharField('Параграф правочника норм', max_length=50)
     done_norms = models.DecimalField('Выполнено норм', decimal_places=2, max_digits=8)
     pricing = models.DecimalField('Расценка, руб.', decimal_places=2, max_digits=8)
