@@ -265,7 +265,10 @@ class WayBillResource(ModelResource):
 
     def post_list(self, request, **kwargs):
         errors = []
-        data = json.loads(request.body.decode('utf-8'))
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except Exception as e:
+            return self.error_response(request, e)
         data['author'] = request.user.pk
         form = prd_forms.WayBillForm(data)
         if form.is_valid():
