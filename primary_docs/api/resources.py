@@ -53,6 +53,7 @@ class UnitsResource(ModelResource):
         detail_allowed_methods = ['get', 'post', 'put', 'delete']
         collection_name = 'units'
         always_return_data = True
+        limit = 200
         authorization = Authorization()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())
         filtering = {
@@ -69,6 +70,7 @@ class MaterialCategoryResource(ModelResource):
         detail_allowed_methods = ['get', 'post', 'put', 'delete']
         collection_name = 'categories'
         always_return_data = True
+        limit = 200
         authorization = Authorization()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())
         filtering = {
@@ -87,6 +89,7 @@ class MaterialResource(ModelResource):
         list_allowed_methods = ['get', 'post', 'put', 'delete']
         detail_allowed_methods = ['get', 'post', 'put', 'delete']
         always_return_data = True
+        limit = 200
         collection_name = 'materials'
         authorization = Authorization()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())
@@ -166,7 +169,7 @@ class DriverTaskResource(ModelResource):
 
     class Meta:
         queryset = models.DriverTask.objects.all()
-        limit = 100
+        limit = 200
         resource_name = 'driver_task'
         list_allowed_methods = ['get', 'post', 'put', 'delete']
         detail_allowed_methods = ['get', 'post', 'put', 'delete']
@@ -188,7 +191,7 @@ class OutfitEventResource(ModelResource):
         collection_name = 'outfit_events'
         authorization = Authorization()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())
-        limit = 100
+        limit = 200
 
 
 class WayBillResource(ModelResource):
@@ -210,7 +213,7 @@ class WayBillResource(ModelResource):
 
     class Meta:
         queryset = models.Waybill.objects.all()
-        limit = 100
+        limit = 200
         resource_name = 'waybill'
         list_allowed_methods = ['get', 'post', 'put', 'delete']
         detail_allowed_methods = ['get', 'post', 'put', 'delete']
@@ -352,6 +355,7 @@ class OutfitResource(ModelResource):
         detail_allowed_methods = ['get', 'post', 'put', 'delete']
         always_return_data = True
         collection_name = 'outfits'
+        limit = 200
         authorization = Authorization()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())
         filtering = {
