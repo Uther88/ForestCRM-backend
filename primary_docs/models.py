@@ -753,7 +753,7 @@ class Outfit(models.Model):
     )
     amount_total = models.DecimalField('Всего, сумма', max_digits=10, decimal_places=2)
     hours_total = models.DecimalField('Часов, всего', max_digits=5, decimal_places=1)
-    days_total = models.DecimalField('Дней, всего', max_digits=5, decimal_places=1)
+    days_total = models.DecimalField('Дней, всего', max_digits=5, decimal_places=2)
 
     issued = models.ForeignKey(
         Worker,
@@ -863,9 +863,9 @@ class OutfitWork(models.Model):
     done_norms = models.DecimalField('Выполнено норм', decimal_places=2, max_digits=8)
     pricing = models.DecimalField('Расценка, руб.', decimal_places=2, max_digits=8)
     amount = models.DecimalField('Сумма, руб.', decimal_places=2, max_digits=8)
-    man_days = models.DecimalField('Человеко-дней.', decimal_places=1, max_digits=8, blank=True)
-    auto_days = models.DecimalField('Машино-смен', decimal_places=1, max_digits=8, blank=True, null=True)
-    days = models.DecimalField('Количество дней.', max_digits=8, decimal_places=1)
+    man_days = models.DecimalField('Человеко-дней.', decimal_places=2, max_digits=8, blank=True)
+    auto_days = models.DecimalField('Машино-смен', decimal_places=2, max_digits=8, blank=True, null=True)
+    days = models.DecimalField('Количество дней.', max_digits=8, decimal_places=2)
 
     class Meta:
         verbose_name = 'Работа для наряда'
@@ -894,7 +894,7 @@ class OutfitTable(models.Model):
     rank = models.IntegerField('Разряд')
     workdays = JSONField('Рабочие Дни', default={})
     hours = models.IntegerField('Всего часов')
-    days = models.DecimalField('Всего дней', decimal_places=1, max_digits=5)
+    days = models.DecimalField('Всего дней', decimal_places=2, max_digits=5)
     done = models.DecimalField('Выполнено норм', max_digits=6, decimal_places=2)
     tariff_rate = models.DecimalField(
         'Тарифная ставка',
