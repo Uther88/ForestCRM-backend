@@ -3,3 +3,4 @@ django-tastypie
 django-jsonfield
 pillow
 django-cors-headers
+python-memcached
