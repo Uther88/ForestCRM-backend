@@ -21,7 +21,7 @@ APP_PATH = os.path.join(BASE_DIR, 'taskmaster')
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 't5b%f*_3h=%3p-uk3h-%arby*gk18qx*=@=-xh(o=39esj5^+@'
+
 #CSRF_USE_SESSIONS = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
