@@ -708,16 +708,14 @@ class Outfit(models.Model):
     )
     conditions = models.IntegerField('Условия труда', blank=True, null=True)
     importance = models.IntegerField('Ответственные работы', blank=True, null=True)
-    bonus = models.DecimalField(
+    bonus = models.FloatField(
         'Премия',
-        max_digits=5,
-        decimal_places=1,
+        null=True,
         blank=True,
     )
-    coefficient = models.DecimalField(
+    coefficient = models.FloatField(
         'Коэффициент',
-        max_digits=5,
-        decimal_places=1,
+        null=True,
         blank=True,
     )
     task = models.CharField('Задание на месяц', max_length=50, blank=True)
@@ -725,7 +723,7 @@ class Outfit(models.Model):
     end = models.DateField('Окончание работы')
     quality = models.CharField('Оценка качества', choices=QUALITY_CHOICES, max_length=50)
 
-    done_total = models.DecimalField('Выработано норм, всего', max_digits=5, decimal_places=2)
+    done_total = models.FloatField('Выработано норм, всего', null=True)
     amount = models.DecimalField('Итого, сумма', max_digits=10, decimal_places=2)
     amount_conditions = models.DecimalField(
         'Итого, по условиям труда', max_digits=10, decimal_places=2, blank=True, null=True
@@ -752,8 +750,8 @@ class Outfit(models.Model):
         null=True,
     )
     amount_total = models.DecimalField('Всего, сумма', max_digits=10, decimal_places=2)
-    hours_total = models.DecimalField('Часов, всего', max_digits=5, decimal_places=1)
-    days_total = models.DecimalField('Дней, всего', max_digits=5, decimal_places=2)
+    hours_total = models.FloatField('Часов, всего', null=True)
+    days_total = models.FloatField("Дней, всего", null=True)
 
     issued = models.ForeignKey(
         Worker,
@@ -857,15 +855,15 @@ class OutfitWork(models.Model):
         null=True,
         on_delete=models.SET_NULL
         )
-    rate = models.DecimalField('Нормы выработки', decimal_places=2, max_digits=8)
-    done = models.DecimalField('Выполнено', decimal_places=2, max_digits=8)
+    rate = models.FloatField('Нормы выработки', null=True)
+    done = models.FloatField('Выполнено', null=True)
     paragraph = models.CharField('Параграф правочника норм', max_length=50)
-    done_norms = models.DecimalField('Выполнено норм', decimal_places=2, max_digits=8)
+    done_norms = models.FloatField('Выполнено норм', null=True)
     pricing = models.DecimalField('Расценка, руб.', decimal_places=2, max_digits=8)
     amount = models.DecimalField('Сумма, руб.', decimal_places=2, max_digits=8)
-    man_days = models.DecimalField('Человеко-дней.', decimal_places=2, max_digits=8, blank=True)
-    auto_days = models.DecimalField('Машино-смен', decimal_places=2, max_digits=8, blank=True, null=True)
-    days = models.DecimalField('Количество дней.', max_digits=8, decimal_places=2)
+    man_days = models.FloatField('Человеко-дней.', blank=True, null=True)
+    auto_days = models.FloatField('Машино-смен', blank=True, null=True)
+    days = models.FloatField('Количество дней.', null=True)
 
     class Meta:
         verbose_name = 'Работа для наряда'
@@ -894,8 +892,8 @@ class OutfitTable(models.Model):
     rank = models.IntegerField('Разряд')
     workdays = JSONField('Рабочие Дни', default={})
     hours = models.IntegerField('Всего часов')
-    days = models.DecimalField('Всего дней', decimal_places=2, max_digits=5)
-    done = models.DecimalField('Выполнено норм', max_digits=6, decimal_places=2)
+    days = models.FloatField('Всего дней', null=True)
+    done = models.FloatField('Выполнено норм', null=True)
     tariff_rate = models.DecimalField(
         'Тарифная ставка',
         decimal_places=2,
@@ -1322,7 +1320,7 @@ class WorkTimeTable(models.Model):
         on_delete=models.SET_NULL
         )
     date = models.DateField('Период')
-    hours = models.DecimalField('Всего часов', null=True, decimal_places=2, max_digits=10)
+    hours = models.FloatField('Всего часов', null=True)
     created_date = models.DateTimeField('Дата создания', default=timezone.now)
     organization = models.ForeignKey(
         Organization,
