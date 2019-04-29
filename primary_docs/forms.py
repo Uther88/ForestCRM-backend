@@ -16,7 +16,7 @@ class WayBillForm(forms.ModelForm):
 
     class Meta:
         model = models.Waybill
-        fields = '__all__'
+        exclude = ['fuel_distribution']
 
     def __init__(self, *args, **kwargs):
         super(WayBillForm, self).__init__(*args, **kwargs)
@@ -33,7 +33,7 @@ class WayBillForm(forms.ModelForm):
 class OutfitForm(forms.ModelForm):
     class Meta:
         model = models.Outfit
-        fields = '__all__'
+        exclude = ['fuel_distribution', 'act_spisanya', 'recycling_list']
 
     def __init__(self, *args, **kwargs):
         super(OutfitForm, self).__init__(*args, **kwargs)
@@ -70,7 +70,7 @@ class OutfitExpenseForm(forms.ModelForm):
 class TractorRegFormWorkForm(forms.ModelForm):
     class Meta:
         model = models.TractorRegFormWork
-        fields = '__all__'
+        exclude = ['fuel_distribution']
 
     def __init__(self, *args, **kwargs):
         super(TractorRegFormWorkForm, self).__init__(*args, **kwargs)
