@@ -89,7 +89,7 @@ class MaterialResource(ModelResource):
         list_allowed_methods = ['get', 'post', 'put', 'delete']
         detail_allowed_methods = ['get', 'post', 'put', 'delete']
         always_return_data = True
-        limit = 200
+        limit = 1000
         collection_name = 'materials'
         authorization = Authorization()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())
